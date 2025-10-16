@@ -90,11 +90,14 @@ async def lifespan(app: FastAPI):
         logger.info("✅ Credentials initialized")
         api_logger.info("🔥 Logfire initialized for backend")
 
-        # Initialize crawling context
-        try:
-            await initialize_crawler()
-        except Exception as e:
-            api_logger.warning(f"Could not fully initialize crawling context: {str(e)}")
+        # Initialize crawling context (skip on Vercel - crawl4ai not supported in serverless)
+        if not os.getenv("VERCEL_DEPLOYMENT"):
+            try:
+                await initialize_crawler()
+            except Exception as e:
+                api_logger.warning(f"Could not fully initialize crawling context: {str(e)}")
+        else:
+            api_logger.info("⏭️  Skipping crawler initialization on Vercel")
 
         # Make crawling context available to modules
         # Crawler is now managed by CrawlerManager
@@ -145,12 +148,23 @@ async def lifespan(app: FastAPI):
 
 
 # Create FastAPI application
-app = FastAPI(
-    title="Archon Knowledge Engine API",
-    description="Backend API for the Archon knowledge management and project automation platform",
-    version="1.0.0",
-    lifespan=lifespan,
-)
+# On Vercel, disable lifespan as serverless functions don't support startup/shutdown events
+is_vercel = os.getenv("VERCEL_DEPLOYMENT") == "1"
+
+if is_vercel:
+    logger.info("🔧 Running on Vercel - lifespan disabled")
+    app = FastAPI(
+        title="Archon Knowledge Engine API",
+        description="Backend API for the Archon knowledge management and project automation platform",
+        version="1.0.0",
+    )
+else:
+    app = FastAPI(
+        title="Archon Knowledge Engine API",
+        description="Backend API for the Archon knowledge management and project automation platform",
+        version="1.0.0",
+        lifespan=lifespan,
+    )
 
 # Configure CORS
 app.add_middleware(
