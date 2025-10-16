@@ -6,7 +6,55 @@
 - **Frontend**: React + Vite (папка `archon-ui-main/`)
 - **Backend**: FastAPI (папка `python/`, адаптер в `api/`)
 
-## Шаги для деплоя
+## Автоматический деплой через GitHub Actions
+
+### Настройка CI/CD (Рекомендуется)
+
+1. **Получите токены Vercel**:
+   ```bash
+   # Установите Vercel CLI
+   npm i -g vercel
+
+   # Войдите в аккаунт
+   vercel login
+
+   # В корне проекта выполните
+   vercel link
+   ```
+
+2. **Получите необходимые ID**:
+   ```bash
+   # После vercel link, проверьте .vercel/project.json
+   cat .vercel/project.json
+   # Вы увидите: projectId и orgId
+   ```
+
+3. **Создайте Vercel токен**:
+   - Откройте https://vercel.com/account/tokens
+   - Создайте новый токен (Scope: Full Account)
+   - Скопируйте токен
+
+4. **Добавьте GitHub Secrets**:
+   - Откройте Settings → Secrets → Actions в вашем GitHub репозитории
+   - Добавьте:
+     - `VERCEL_TOKEN` - ваш Vercel токен
+     - `VERCEL_ORG_ID` - из .vercel/project.json (orgId)
+     - `VERCEL_PROJECT_ID` - из .vercel/project.json (projectId)
+
+5. **Push в main для деплоя**:
+   ```bash
+   git add .
+   git commit -m "Setup Vercel deployment"
+   git push origin main
+   ```
+
+GitHub Actions автоматически задеплоит на Vercel! 🚀
+
+### Workflows:
+- **Production** (`.github/workflows/vercel-deploy.yml`): Деплоит при push в `main`
+- **Preview** (`.github/workflows/vercel-preview.yml`): Создает preview при Pull Request
+
+## Ручной деплой
 
 ### 1. Подключение репозитория к Vercel
 

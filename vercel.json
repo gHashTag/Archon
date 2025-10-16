@@ -5,25 +5,34 @@
   "installCommand": "npm install",
   "framework": null,
   "functions": {
-    "api/*.py": {
-      "runtime": "python3.12"
+    "api/index.py": {
+      "runtime": "python3.12",
+      "maxDuration": 60
     }
   },
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/index.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/archon-ui-main/dist/$1"
+      "source": "/api/:path*",
+      "destination": "/api/index.py"
     }
   ],
-  "env": {
-    "SUPABASE_URL": "@supabase_url",
-    "SUPABASE_SERVICE_KEY": "@supabase_service_key",
-    "SUPABASE_ANON_KEY": "@supabase_anon_key",
-    "OPENAI_API_KEY": "@openai_api_key",
-    "PYTHON_VERSION": "3.12"
-  }
+  "headers": [
+    {
+      "source": "/api/:path*",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
+    }
+  ]
 }
