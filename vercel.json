@@ -4,35 +4,30 @@
   "outputDirectory": "archon-ui-main/dist",
   "installCommand": "npm install",
   "framework": null,
-  "functions": {
-    "api/index.py": {
-      "runtime": "python3.12",
-      "maxDuration": 60
-    }
-  },
-  "rewrites": [
+  "builds": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/index.py"
+      "src": "api/index.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "archon-ui-main/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "archon-ui-main/dist"
+      }
     }
   ],
-  "headers": [
+  "routes": [
     {
-      "source": "/api/:path*",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, PUT, DELETE, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization"
-        }
-      ]
+      "src": "/api/(.*)",
+      "dest": "/api/index.py"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/archon-ui-main/dist/$1"
     }
   ]
 }
