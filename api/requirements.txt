@@ -1,0 +1,28 @@
+# Web framework
+fastapi>=0.104.0
+uvicorn>=0.24.0
+python-multipart>=0.0.20
+
+# Database and storage
+supabase==2.15.1
+asyncpg>=0.29.0
+
+# AI/ML libraries
+openai==1.71.0
+
+# Document processing (lightweight versions)
+pypdf2>=3.0.1
+python-docx>=1.1.2
+markdown>=3.8
+
+# Security and utilities
+python-jose[cryptography]>=3.3.0
+cryptography>=41.0.0
+
+# Core utilities
+httpx>=0.24.0
+pydantic>=2.0.0
+python-dotenv>=1.0.0
+
+# Logging
+logfire>=0.30.0
