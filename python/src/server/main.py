@@ -175,6 +175,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Add Vercel initialization middleware (must be after CORS)
+if is_vercel:
+    from .middleware.vercel_init import VercelInitMiddleware
+    app.add_middleware(VercelInitMiddleware)
+    logger.info("✅ Vercel initialization middleware added")
+
 
 # Add middleware to skip logging for health checks
 @app.middleware("http")
