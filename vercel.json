@@ -1,9 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "npm run vercel-build",
-  "outputDirectory": "archon-ui-main/dist",
-  "installCommand": "npm install",
-  "framework": null,
   "builds": [
     {
       "src": "api/index.py",
@@ -13,7 +9,7 @@
       "src": "archon-ui-main/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "archon-ui-main/dist"
+        "distDir": "dist"
       }
     }
   ],
@@ -27,7 +23,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/archon-ui-main/dist/$1"
+      "dest": "/archon-ui-main/$1"
     }
   ]
 }
