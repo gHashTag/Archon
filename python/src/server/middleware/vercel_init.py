@@ -41,16 +41,19 @@ async def initialize_for_vercel():
         _INITIALIZATION_LOCK = True
         logger.info("🚀 Initializing for Vercel serverless...")
 
-        # Validate configuration FIRST
-        from ..config.config import get_config
-        get_config()
+        # On Vercel, skip database credential loading - use only env vars
+        # This avoids dependency on credentials table in Supabase
+        logger.info("⏭️  Skipping database credentials (using env vars only)")
 
-        # Initialize credentials from database
-        from ..services.credential_service import initialize_credentials
-        await initialize_credentials()
-        logger.info("✅ Credentials initialized")
+        # Validate that required env vars are present
+        required_vars = ["SUPABASE_URL", "SUPABASE_SERVICE_KEY"]
+        missing = [var for var in required_vars if not os.getenv(var)]
+        if missing:
+            raise ValueError(f"Missing required environment variables: {', '.join(missing)}")
 
-        # Initialize logging
+        logger.info("✅ Environment variables validated")
+
+        # Initialize logging (minimal setup without credentials)
         from ..config.logfire_config import setup_logfire
         setup_logfire(service_name="archon-backend")
         logger.info("✅ Logging initialized")
@@ -58,13 +61,8 @@ async def initialize_for_vercel():
         # Skip crawler initialization on Vercel
         logger.info("⏭️  Skipping crawler initialization (Vercel serverless)")
 
-        # Initialize prompt service
-        try:
-            from ..services.prompt_service import prompt_service
-            await prompt_service.load_prompts()
-            logger.info("✅ Prompt service initialized")
-        except Exception as e:
-            logger.warning(f"Could not initialize prompt service: {e}")
+        # Skip prompt service on Vercel (may require DB access)
+        logger.info("⏭️  Skipping prompt service (Vercel serverless)")
 
         _INITIALIZED = True
         logger.info("🎉 Vercel initialization complete!")
