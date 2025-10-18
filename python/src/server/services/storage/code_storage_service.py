@@ -702,7 +702,7 @@ async def _generate_summary_with_client(
     last_response_obj = None
     last_elapsed_time = None
     last_response_content = ""
-    last_json_error: json.JSONDecodeError | None = None
+    last_json_error: Optional[json.JSONDecodeError] = None
 
     try:
         for enforce_json, current_prompt in ((False, guard_prompt), (True, strict_prompt)):

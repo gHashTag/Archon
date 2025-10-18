@@ -14,7 +14,7 @@ from .timeout_config import get_default_timeout, get_polling_timeout
 
 @asynccontextmanager
 async def get_http_client(
-    timeout: httpx.Timeout | None = None, for_polling: bool = False
+    timeout: Optional[httpx.Timeout] = None, for_polling: bool = False
 ) -> AsyncIterator[httpx.AsyncClient]:
     """
     Create an HTTP client with consistent configuration.

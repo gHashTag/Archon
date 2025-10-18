@@ -81,7 +81,7 @@ class ProviderDiscoveryService:
     """Service for discovering models and checking provider health."""
 
     def __init__(self):
-        self._session: aiohttp.ClientSession | None = None
+        self._session: Optional[aiohttp.ClientSession] = None
 
     async def _get_session(self) -> aiohttp.ClientSession:
         """Get or create HTTP session for provider requests."""

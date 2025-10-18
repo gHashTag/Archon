@@ -34,7 +34,7 @@ logger = get_logger(__name__)
 
 # Global registry to track active orchestration services for cancellation support
 _active_orchestrations: dict[str, "CrawlingService"] = {}
-_orchestration_lock: asyncio.Lock | None = None
+_orchestration_lock: Optional[asyncio.Lock] = None
 
 
 def _ensure_orchestration_lock() -> asyncio.Lock:

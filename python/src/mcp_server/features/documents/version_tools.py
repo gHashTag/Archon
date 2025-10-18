@@ -134,7 +134,7 @@ def register_version_tools(mcp: FastMCP):
         project_id: str,
         field_name: str,
         version_number: Optional[int] = None,
-        content: dict[str, Any] | list[dict[str, Any]] | None = None,
+        content: Optional[dict[str, Any] | list[dict[str, Any]]] = None,
         change_summary: Optional[str] = None,
         document_id: Optional[str] = None,
         created_by: str = "system",

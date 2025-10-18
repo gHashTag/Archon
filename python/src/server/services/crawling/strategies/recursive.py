@@ -40,7 +40,7 @@ class RecursiveCrawlStrategy:
         is_documentation_site_func: Callable[[str], bool],
         max_depth: int = 3,
         max_concurrent: Optional[int] = None,
-        progress_callback: Callable[..., Awaitable[None]] | None = None,
+        progress_callback: Optional[Callable[..., Awaitable[None]]] = None,
         cancellation_check: Optional[Callable[[], None]] = None,
     ) -> list[dict[str, Any]]:
         """

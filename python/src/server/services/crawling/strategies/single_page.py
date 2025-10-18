@@ -223,7 +223,7 @@ class SinglePageCrawlStrategy:
         self,
         url: str,
         transform_url_func: Callable[[str], str],
-        progress_callback: Callable[..., Awaitable[None]] | None = None,
+        progress_callback: Optional[Callable[..., Awaitable[None]]] = None,
         start_progress: int = 10,
         end_progress: int = 20
     ) -> list[dict[str, Any]]:
