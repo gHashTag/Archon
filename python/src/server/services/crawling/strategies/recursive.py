@@ -39,9 +39,9 @@ class RecursiveCrawlStrategy:
         transform_url_func: Callable[[str], str],
         is_documentation_site_func: Callable[[str], bool],
         max_depth: int = 3,
-        max_concurrent: int | None = None,
+        max_concurrent: Optional[int] = None,
         progress_callback: Callable[..., Awaitable[None]] | None = None,
-        cancellation_check: Callable[[], None] | None = None,
+        cancellation_check: Optional[Callable[[], None]] = None,
     ) -> list[dict[str, Any]]:
         """
         Recursively crawl internal links from start URLs up to a maximum depth with progress reporting.

@@ -21,11 +21,11 @@ async def add_documents_to_supabase(
     metadatas: list[dict[str, Any]],
     url_to_full_document: dict[str, str],
     batch_size: int = None,  # Will load from settings
-    progress_callback: Any | None = None,
+    progress_callback: Optional[Any] = None,
     enable_parallel_batches: bool = True,
-    provider: str | None = None,
-    cancellation_check: Any | None = None,
-    url_to_page_id: dict[str, str] | None = None,
+    provider: Optional[str] = None,
+    cancellation_check: Optional[Any] = None,
+    url_to_page_id: Optional[dict[str, str]] = None,
 ) -> dict[str, int]:
     """
     Add documents to Supabase with threading optimizations.

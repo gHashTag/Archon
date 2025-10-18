@@ -69,8 +69,8 @@ class AgenticRAGStrategy:
         self,
         query: str,
         match_count: int = 10,
-        filter_metadata: dict[str, Any] | None = None,
-        source_id: str | None = None,
+        filter_metadata: Optional[dict[str, Any]] = None,
+        source_id: Optional[str] = None,
     ) -> list[dict[str, Any]]:
         """
         Search for code examples using vector similarity.
@@ -124,7 +124,7 @@ class AgenticRAGStrategy:
     async def perform_agentic_search(
         self,
         query: str,
-        source_id: str | None = None,
+        source_id: Optional[str] = None,
         match_count: int = 5,
         include_context: bool = True,
     ) -> tuple[bool, dict[str, Any]]:
@@ -374,8 +374,8 @@ async def search_code_examples_agentic(
     client: Client,
     query: str,
     match_count: int = 10,
-    filter_metadata: dict[str, Any] | None = None,
-    source_id: str | None = None,
+    filter_metadata: Optional[dict[str, Any]] = None,
+    source_id: Optional[str] = None,
 ) -> list[dict[str, Any]]:
     """
     Standalone function for agentic code example search.

@@ -1,4 +1,5 @@
 """
+from typing import Optional
 Agent Chat API - Polling-based chat with SSE proxy to AI agents
 """
 
@@ -20,7 +21,7 @@ sessions: dict[str, dict] = {}
 
 # Request/Response models
 class CreateSessionRequest(BaseModel):
-    project_id: str | None = None
+    project_id: Optional[str] = None
     agent_type: str = "rag"
 
 
@@ -29,7 +30,7 @@ class ChatMessage(BaseModel):
     content: str
     sender: str
     timestamp: datetime
-    agent_type: str | None = None
+    agent_type: Optional[str] = None
 
 
 # REST Endpoints (minimal for frontend compatibility)

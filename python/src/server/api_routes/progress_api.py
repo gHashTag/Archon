@@ -1,5 +1,6 @@
 """Progress API endpoints for polling operation status."""
 
+from typing import Optional
 from datetime import datetime
 from email.utils import formatdate
 
@@ -23,7 +24,7 @@ TERMINAL_STATES = {"completed", "failed", "error", "cancelled"}
 async def get_progress(
     operation_id: str,
     response: Response,
-    if_none_match: str | None = Header(None)
+    if_none_match: Optional[str] = Header(None)
 ):
     """
     Get progress for an operation with ETag support.

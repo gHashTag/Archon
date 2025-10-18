@@ -1,4 +1,5 @@
 """
+from typing import Optional
 Consolidated project management tools for Archon MCP Server.
 
 Reduces the number of individual CRUD operations while maintaining full functionality.
@@ -56,8 +57,8 @@ def register_project_tools(mcp: FastMCP):
     @mcp.tool()
     async def find_projects(
         ctx: Context,
-        project_id: str | None = None,  # For getting single project
-        query: str | None = None,  # Search capability
+        project_id: Optional[str] = None,  # For getting single project
+        query: Optional[str] = None,  # Search capability
         page: int = 1,
         per_page: int = DEFAULT_PAGE_SIZE,
     ) -> str:
@@ -148,10 +149,10 @@ def register_project_tools(mcp: FastMCP):
     async def manage_project(
         ctx: Context,
         action: str,  # "create" | "update" | "delete"
-        project_id: str | None = None,
-        title: str | None = None,
-        description: str | None = None,
-        github_repo: str | None = None,
+        project_id: Optional[str] = None,
+        title: Optional[str] = None,
+        description: Optional[str] = None,
+        github_repo: Optional[str] = None,
     ) -> str:
         """
         Manage projects (consolidated: create/update/delete).

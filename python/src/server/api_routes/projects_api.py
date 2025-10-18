@@ -42,44 +42,44 @@ router = APIRouter(prefix="/api", tags=["projects"])
 
 class CreateProjectRequest(BaseModel):
     title: str
-    description: str | None = None
-    github_repo: str | None = None
-    docs: list[Any] | None = None
-    features: list[Any] | None = None
-    data: list[Any] | None = None
-    technical_sources: list[str] | None = None  # List of knowledge source IDs
-    business_sources: list[str] | None = None  # List of knowledge source IDs
-    pinned: bool | None = None  # Whether this project should be pinned to top
+    description: Optional[str] = None
+    github_repo: Optional[str] = None
+    docs: Optional[list[Any]] = None
+    features: Optional[list[Any]] = None
+    data: Optional[list[Any]] = None
+    technical_sources: Optional[list[str]] = None  # List of knowledge source IDs
+    business_sources: Optional[list[str]] = None  # List of knowledge source IDs
+    pinned: Optional[bool] = None  # Whether this project should be pinned to top
 
 
 class UpdateProjectRequest(BaseModel):
-    title: str | None = None
-    description: str | None = None  # Add description field
-    github_repo: str | None = None
-    docs: list[Any] | None = None
-    features: list[Any] | None = None
-    data: list[Any] | None = None
-    technical_sources: list[str] | None = None  # List of knowledge source IDs
-    business_sources: list[str] | None = None  # List of knowledge source IDs
-    pinned: bool | None = None  # Whether this project is pinned to top
+    title: Optional[str] = None
+    description: Optional[str] = None  # Add description field
+    github_repo: Optional[str] = None
+    docs: Optional[list[Any]] = None
+    features: Optional[list[Any]] = None
+    data: Optional[list[Any]] = None
+    technical_sources: Optional[list[str]] = None  # List of knowledge source IDs
+    business_sources: Optional[list[str]] = None  # List of knowledge source IDs
+    pinned: Optional[bool] = None  # Whether this project is pinned to top
 
 
 class CreateTaskRequest(BaseModel):
     project_id: str
     title: str
-    description: str | None = None
-    status: str | None = "todo"
-    assignee: str | None = "User"
-    task_order: int | None = 0
-    priority: str | None = "medium"
-    feature: str | None = None
+    description: Optional[str] = None
+    status: Optional[str] = "todo"
+    assignee: Optional[str] = "User"
+    task_order: Optional[int] = 0
+    priority: Optional[str] = "medium"
+    feature: Optional[str] = None
 
 
 @router.get("/projects")
 async def list_projects(
     response: Response,
     include_content: bool = True,
-    if_none_match: str | None = Header(None)
+    if_none_match: Optional[str] = Header(None)
 ):
     """
     List all projects.
@@ -581,11 +581,11 @@ async def list_project_tasks(
 
         # Generate ETag from task data (includes description and updated_at to drive polling invalidation)
         etag_tasks: list[dict[str, object]] = []
-        last_modified_dt: datetime | None = None
+        last_modified_dt: Optional[datetime] = None
 
         for task in tasks:
             raw_updated = task.get("updated_at")
-            parsed_updated: datetime | None = None
+            parsed_updated: Optional[datetime] = None
             if isinstance(raw_updated, datetime):
                 parsed_updated = raw_updated
             elif isinstance(raw_updated, str):
@@ -690,13 +690,13 @@ async def create_task(request: CreateTaskRequest):
 
 @router.get("/tasks")
 async def list_tasks(
-    status: str | None = None,
-    project_id: str | None = None,
+    status: Optional[str] = None,
+    project_id: Optional[str] = None,
     include_closed: bool = True,
     page: int = 1,
     per_page: int = 10,
     exclude_large_fields: bool = False,
-    q: str | None = None,  # Search query parameter
+    q: Optional[str] = None,  # Search query parameter
 ):
     """List tasks with optional filters including status, project, and keyword search."""
     try:
@@ -799,41 +799,41 @@ async def get_task(task_id: str):
 
 
 class UpdateTaskRequest(BaseModel):
-    title: str | None = None
-    description: str | None = None
-    status: str | None = None
-    assignee: str | None = None
-    task_order: int | None = None
-    priority: str | None = None
-    feature: str | None = None
+    title: Optional[str] = None
+    description: Optional[str] = None
+    status: Optional[str] = None
+    assignee: Optional[str] = None
+    task_order: Optional[int] = None
+    priority: Optional[str] = None
+    feature: Optional[str] = None
 
 
 class CreateDocumentRequest(BaseModel):
     document_type: str
     title: str
-    content: dict[str, Any] | None = None
-    tags: list[str] | None = None
-    author: str | None = None
+    content: Optional[dict[str, Any]] = None
+    tags: Optional[list[str]] = None
+    author: Optional[str] = None
 
 
 class UpdateDocumentRequest(BaseModel):
-    title: str | None = None
-    content: dict[str, Any] | None = None
-    tags: list[str] | None = None
-    author: str | None = None
+    title: Optional[str] = None
+    content: Optional[dict[str, Any]] = None
+    tags: Optional[list[str]] = None
+    author: Optional[str] = None
 
 
 class CreateVersionRequest(BaseModel):
     field_name: str
     content: dict[str, Any]
-    change_summary: str | None = None
-    change_type: str | None = "update"
-    document_id: str | None = None
-    created_by: str | None = "system"
+    change_summary: Optional[str] = None
+    change_type: Optional[str] = "update"
+    document_id: Optional[str] = None
+    created_by: Optional[str] = "system"
 
 
 class RestoreVersionRequest(BaseModel):
-    restored_by: str | None = "system"
+    restored_by: Optional[str] = "system"
 
 
 @router.put("/tasks/{task_id}")

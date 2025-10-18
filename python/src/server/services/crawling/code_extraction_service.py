@@ -137,10 +137,10 @@ class CodeExtractionService:
         crawl_results: list[dict[str, Any]],
         url_to_full_document: dict[str, str],
         source_id: str,
-        progress_callback: Callable | None = None,
-        cancellation_check: Callable[[], None] | None = None,
-        provider: str | None = None,
-        embedding_provider: str | None = None,
+        progress_callback: Optional[Callable] = None,
+        cancellation_check: Optional[Callable[[], None]] = None,
+        provider: Optional[str] = None,
+        embedding_provider: Optional[str] = None,
     ) -> int:
         """
         Extract code examples from crawled documents and store them.
@@ -259,8 +259,8 @@ class CodeExtractionService:
         self,
         crawl_results: list[dict[str, Any]],
         source_id: str,
-        progress_callback: Callable | None = None,
-        cancellation_check: Callable[[], None] | None = None,
+        progress_callback: Optional[Callable] = None,
+        cancellation_check: Optional[Callable[[], None]] = None,
     ) -> list[dict[str, Any]]:
         """
         Extract code blocks from all documents.
@@ -757,7 +757,7 @@ class CodeExtractionService:
         return code_blocks
 
     async def _extract_text_file_code_blocks(
-        self, content: str, url: str, min_length: int | None = None
+        self, content: str, url: str, min_length: Optional[int] = None
     ) -> list[dict[str, Any]]:
         """
         Extract code blocks from plain text files (like .txt files).
@@ -1561,9 +1561,9 @@ class CodeExtractionService:
     async def _generate_code_summaries(
         self,
         all_code_blocks: list[dict[str, Any]],
-        progress_callback: Callable | None = None,
-        cancellation_check: Callable[[], None] | None = None,
-        provider: str | None = None,
+        progress_callback: Optional[Callable] = None,
+        cancellation_check: Optional[Callable[[], None]] = None,
+        provider: Optional[str] = None,
     ) -> list[dict[str, str]]:
         """
         Generate summaries for all code blocks.
@@ -1707,9 +1707,9 @@ class CodeExtractionService:
         self,
         storage_data: dict[str, list[Any]],
         url_to_full_document: dict[str, str],
-        progress_callback: Callable | None = None,
-        provider: str | None = None,
-        embedding_provider: str | None = None,
+        progress_callback: Optional[Callable] = None,
+        provider: Optional[str] = None,
+        embedding_provider: Optional[str] = None,
     ) -> int:
         """
         Store code examples in the database.

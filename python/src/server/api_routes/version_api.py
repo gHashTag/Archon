@@ -29,14 +29,14 @@ class VersionCheckResponse(BaseModel):
     """Version check response with update information."""
 
     current: str
-    latest: str | None
+    latest: Optional[str]
     update_available: bool
-    release_url: str | None
-    release_notes: str | None
-    published_at: datetime | None
-    check_error: str | None = None
-    assets: list[dict[str, Any]] | None = None
-    author: str | None = None
+    release_url: Optional[str]
+    release_notes: Optional[str]
+    published_at: Optional[datetime]
+    check_error: Optional[str] = None
+    assets: Optional[list[dict[str, Any]]] = None
+    author: Optional[str] = None
 
 
 class CurrentVersionResponse(BaseModel):
@@ -51,7 +51,7 @@ router = APIRouter(prefix="/api/version", tags=["version"])
 
 
 @router.get("/check", response_model=VersionCheckResponse)
-async def check_for_updates(response: Response, if_none_match: str | None = Header(None)):
+async def check_for_updates(response: Response, if_none_match: Optional[str] = Header(None)):
     """
     Check for available Archon updates.
 

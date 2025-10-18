@@ -88,9 +88,9 @@ class RAGService:
         self,
         query: str,
         match_count: int = 5,
-        filter_metadata: dict | None = None,
+        filter_metadata: Optional[dict] = None,
         use_hybrid_search: bool = False,
-        cached_api_key: str | None = None,
+        cached_api_key: Optional[str] = None,
     ) -> list[dict[str, Any]]:
         """
         Document search with hybrid search capability.
@@ -149,8 +149,8 @@ class RAGService:
         self,
         query: str,
         match_count: int = 10,
-        filter_metadata: dict[str, Any] | None = None,
-        source_id: str | None = None,
+        filter_metadata: Optional[dict[str, Any]] = None,
+        source_id: Optional[str] = None,
     ) -> list[dict[str, Any]]:
         """
         Search for code examples - delegates to agentic strategy.
@@ -378,7 +378,7 @@ class RAGService:
                 }
 
     async def search_code_examples_service(
-        self, query: str, source_id: str | None = None, match_count: int = 5
+        self, query: str, source_id: Optional[str] = None, match_count: int = 5
     ) -> tuple[bool, dict[str, Any]]:
         """
         Search for code examples using agentic strategy with hybrid search and reranking.

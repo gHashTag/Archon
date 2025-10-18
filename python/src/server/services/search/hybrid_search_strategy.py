@@ -33,7 +33,7 @@ class HybridSearchStrategy:
         query: str,
         query_embedding: list[float],
         match_count: int,
-        filter_metadata: dict | None = None,
+        filter_metadata: Optional[dict] = None,
     ) -> list[dict[str, Any]]:
         """
         Perform hybrid search on archon_crawled_pages table using the PostgreSQL 
@@ -109,8 +109,8 @@ class HybridSearchStrategy:
         self,
         query: str,
         match_count: int,
-        filter_metadata: dict | None = None,
-        source_id: str | None = None,
+        filter_metadata: Optional[dict] = None,
+        source_id: Optional[str] = None,
     ) -> list[dict[str, Any]]:
         """
         Perform hybrid search on archon_code_examples table using the PostgreSQL 

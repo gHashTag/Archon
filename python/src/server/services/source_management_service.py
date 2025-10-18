@@ -101,11 +101,11 @@ async def generate_source_title_and_metadata(
     source_id: str,
     content: str,
     knowledge_type: str = "technical",
-    tags: list[str] | None = None,
+    tags: Optional[list[str]] = None,
     provider: str = None,
-    original_url: str | None = None,
-    source_display_name: str | None = None,
-    source_type: str | None = None,
+    original_url: Optional[str] = None,
+    source_display_name: Optional[str] = None,
+    source_type: Optional[str] = None,
 ) -> tuple[str, dict[str, Any]]:
     """
     Generate a user-friendly title and metadata for a source based on its content.
@@ -218,12 +218,12 @@ async def update_source_info(
     word_count: int,
     content: str = "",
     knowledge_type: str = "technical",
-    tags: list[str] | None = None,
+    tags: Optional[list[str]] = None,
     update_frequency: int = 7,
-    original_url: str | None = None,
-    source_url: str | None = None,
-    source_display_name: str | None = None,
-    source_type: str | None = None,
+    original_url: Optional[str] = None,
+    source_url: Optional[str] = None,
+    source_display_name: Optional[str] = None,
+    source_type: Optional[str] = None,
 ):
     """
     Update or insert source information in the sources table.

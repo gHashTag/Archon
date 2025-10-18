@@ -54,11 +54,11 @@ def register_task_tools(mcp: FastMCP):
     @mcp.tool()
     async def find_tasks(
         ctx: Context,
-        query: str | None = None,  # Add search capability
-        task_id: str | None = None,  # For getting single task
-        filter_by: str | None = None,
-        filter_value: str | None = None,
-        project_id: str | None = None,
+        query: Optional[str] = None,  # Add search capability
+        task_id: Optional[str] = None,  # For getting single task
+        filter_by: Optional[str] = None,
+        filter_value: Optional[str] = None,
+        project_id: Optional[str] = None,
         include_closed: bool = True,
         page: int = 1,
         per_page: int = DEFAULT_PAGE_SIZE,  # Use optimized default
@@ -200,14 +200,14 @@ def register_task_tools(mcp: FastMCP):
     async def manage_task(
         ctx: Context,
         action: str,  # "create" | "update" | "delete"
-        task_id: str | None = None,
-        project_id: str | None = None,
-        title: str | None = None,
-        description: str | None = None,
-        status: str | None = None,
-        assignee: str | None = None,
-        task_order: int | None = None,
-        feature: str | None = None
+        task_id: Optional[str] = None,
+        project_id: Optional[str] = None,
+        title: Optional[str] = None,
+        description: Optional[str] = None,
+        status: Optional[str] = None,
+        assignee: Optional[str] = None,
+        task_order: Optional[int] = None,
+        feature: Optional[str] = None
     ) -> str:
         """
         Manage tasks (consolidated: create/update/delete).

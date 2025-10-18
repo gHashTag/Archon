@@ -1,4 +1,5 @@
 """
+from typing import Optional
 Pages API Module
 
 This module handles page retrieval operations for RAG:
@@ -28,7 +29,7 @@ class PageSummary(BaseModel):
 
     id: str
     url: str
-    section_title: str | None = None
+    section_title: Optional[str] = None
     section_order: int = 0
     word_count: int
     char_count: int
@@ -42,7 +43,7 @@ class PageResponse(BaseModel):
     source_id: str
     url: str
     full_content: str
-    section_title: str | None = None
+    section_title: Optional[str] = None
     section_order: int = 0
     word_count: int
     char_count: int
@@ -92,7 +93,7 @@ def _handle_large_page_content(page_data: dict) -> dict:
 @router.get("/pages")
 async def list_pages(
     source_id: str = Query(..., description="Source ID to filter pages"),
-    section: str | None = Query(None, description="Filter by section title (for llms-full.txt)"),
+    section: Optional[str] = Query(None, description="Filter by section title (for llms-full.txt)"),
 ):
     """
     List all pages for a given source.

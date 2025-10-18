@@ -78,7 +78,7 @@ def _log_cache_access(key: str, action: str, hit: bool = None, security_event: s
         logger.warning(f"Cache security event: {security_event} for key '{safe_key}'")
 
 
-def _get_cached_settings(key: str) -> Any | None:
+def _get_cached_settings(key: str) -> Optional[Any]:
     """Get cached settings if not expired and valid."""
 
     try:
@@ -311,10 +311,10 @@ def get_cache_security_report() -> dict[str, Any]:
     return report
 @asynccontextmanager
 async def get_llm_client(
-    provider: str | None = None,
+    provider: Optional[str] = None,
     use_embedding_provider: bool = False,
-    instance_type: str | None = None,
-    base_url: str | None = None,
+    instance_type: Optional[str] = None,
+    base_url: Optional[str] = None,
 ):
     """
     Create an async OpenAI-compatible client based on the configured provider.
@@ -333,7 +333,7 @@ async def get_llm_client(
         openai.AsyncOpenAI: An OpenAI-compatible client configured for the selected provider
     """
     client = None
-    provider_name: str | None = None
+    provider_name: Optional[str] = None
     api_key = None
 
     try:
@@ -549,9 +549,9 @@ async def get_llm_client(
 
 
 
-async def _get_optimal_ollama_instance(instance_type: str | None = None,
+async def _get_optimal_ollama_instance(instance_type: Optional[str] = None,
                                        use_embedding_provider: bool = False,
-                                       base_url_override: str | None = None) -> str:
+                                       base_url_override: Optional[str] = None) -> str:
     """
     Get the optimal Ollama instance URL based on configuration and health status.
     
@@ -597,7 +597,7 @@ async def _get_optimal_ollama_instance(instance_type: str | None = None,
             return "http://host.docker.internal:11434/v1"
 
 
-async def get_embedding_model(provider: str | None = None) -> str:
+async def get_embedding_model(provider: Optional[str] = None) -> str:
     """
     Get the configured embedding model based on the provider.
 
@@ -1132,7 +1132,7 @@ def prepare_chat_completion_params(model: str, params: dict) -> dict:
     return updated_params
 
 
-async def get_embedding_model_with_routing(provider: str | None = None, instance_url: str | None = None) -> tuple[str, str]:
+async def get_embedding_model_with_routing(provider: Optional[str] = None, instance_url: Optional[str] = None) -> tuple[str, str]:
     """
     Get the embedding model with intelligent routing for multi-instance setups.
     
@@ -1168,7 +1168,7 @@ async def get_embedding_model_with_routing(provider: str | None = None, instance
         return "text-embedding-3-small", None
 
 
-async def validate_provider_instance(provider: str, instance_url: str | None = None) -> dict[str, any]:
+async def validate_provider_instance(provider: str, instance_url: Optional[str] = None) -> dict[str, any]:
     """
     Validate a provider instance and return health information.
     

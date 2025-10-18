@@ -1,4 +1,5 @@
 """
+from typing import Optional
 Sitemap Crawling Strategy
 
 Handles crawling of URLs from XML sitemaps.
@@ -17,7 +18,7 @@ logger = get_logger(__name__)
 class SitemapCrawlStrategy:
     """Strategy for parsing and crawling sitemaps."""
 
-    def parse_sitemap(self, sitemap_url: str, cancellation_check: Callable[[], None] | None = None) -> list[str]:
+    def parse_sitemap(self, sitemap_url: str, cancellation_check: Optional[Callable[[], None]] = None) -> list[str]:
         """
         Parse a sitemap and extract URLs with comprehensive error handling.
         

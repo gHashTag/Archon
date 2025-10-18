@@ -56,9 +56,9 @@ class ModelSpec:
     supports_tools: bool = False
     supports_vision: bool = False
     supports_embeddings: bool = False
-    embedding_dimensions: int | None = None
-    pricing_input: float | None = None  # Per million tokens
-    pricing_output: float | None = None  # Per million tokens
+    embedding_dimensions: Optional[int] = None
+    pricing_input: Optional[float] = None  # Per million tokens
+    pricing_output: Optional[float] = None  # Per million tokens
     description: str = ""
     aliases: list[str] = None
 
@@ -71,11 +71,11 @@ class ProviderStatus:
     """Provider health and connectivity status."""
     provider: str
     is_available: bool
-    response_time_ms: float | None = None
-    error_message: str | None = None
+    response_time_ms: Optional[float] = None
+    error_message: Optional[str] = None
     models_available: int = 0
-    base_url: str | None = None
-    last_checked: float | None = None
+    base_url: Optional[str] = None
+    last_checked: Optional[float] = None
 
 class ProviderDiscoveryService:
     """Service for discovering models and checking provider health."""
@@ -96,7 +96,7 @@ class ProviderDiscoveryService:
             await self._session.close()
             self._session = None
 
-    def _get_cached_result(self, cache_key: str) -> Any | None:
+    def _get_cached_result(self, cache_key: str) -> Optional[Any]:
         """Get cached result if not expired."""
         if cache_key in _provider_cache:
             result, timestamp = _provider_cache[cache_key]

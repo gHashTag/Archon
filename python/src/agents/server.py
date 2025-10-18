@@ -38,17 +38,17 @@ class AgentRequest(BaseModel):
 
     agent_type: str  # "document", "rag", etc.
     prompt: str
-    context: dict[str, Any] | None = None
-    options: dict[str, Any] | None = None
+    context: Optional[dict[str, Any]] = None
+    options: Optional[dict[str, Any]] = None
 
 
 class AgentResponse(BaseModel):
     """Response model for agent interactions"""
 
     success: bool
-    result: Any | None = None
-    error: str | None = None
-    metadata: dict[str, Any] | None = None
+    result: Optional[Any] = None
+    error: Optional[str] = None
+    metadata: Optional[dict[str, Any]] = None
 
 
 # Agent registry

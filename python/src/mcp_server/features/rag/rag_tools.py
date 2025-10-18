@@ -1,4 +1,5 @@
 """
+from typing import Optional
 RAG Module for Archon MCP Server (HTTP-based version)
 
 This module provides tools for:
@@ -79,7 +80,7 @@ def register_rag_tools(mcp: FastMCP):
     async def rag_search_knowledge_base(
         ctx: Context,
         query: str,
-        source_id: str | None = None,
+        source_id: Optional[str] = None,
         match_count: int = 5,
         return_mode: str = "pages"
     ) -> str:
@@ -153,7 +154,7 @@ def register_rag_tools(mcp: FastMCP):
 
     @mcp.tool()
     async def rag_search_code_examples(
-        ctx: Context, query: str, source_id: str | None = None, match_count: int = 5
+        ctx: Context, query: str, source_id: Optional[str] = None, match_count: int = 5
     ) -> str:
         """
         Search for relevant code examples in the knowledge base.
@@ -216,7 +217,7 @@ def register_rag_tools(mcp: FastMCP):
 
     @mcp.tool()
     async def rag_list_pages_for_source(
-        ctx: Context, source_id: str, section: str | None = None
+        ctx: Context, source_id: str, section: Optional[str] = None
     ) -> str:
         """
         List all pages for a given knowledge source.
@@ -295,7 +296,7 @@ def register_rag_tools(mcp: FastMCP):
 
     @mcp.tool()
     async def rag_read_full_page(
-        ctx: Context, page_id: str | None = None, url: str | None = None
+        ctx: Context, page_id: Optional[str] = None, url: Optional[str] = None
     ) -> str:
         """
         Retrieve full page content from knowledge base.

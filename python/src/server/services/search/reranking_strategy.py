@@ -31,7 +31,7 @@ class RerankingStrategy:
     """Strategy class implementing result reranking using CrossEncoder models"""
 
     def __init__(
-        self, model_name: str = DEFAULT_RERANKING_MODEL, model_instance: Any | None = None
+        self, model_name: str = DEFAULT_RERANKING_MODEL, model_instance: Optional[Any] = None
     ):
         """
         Initialize reranking strategy.
@@ -109,7 +109,7 @@ class RerankingStrategy:
         results: list[dict[str, Any]],
         scores: list[float],
         valid_indices: list[int],
-        top_k: int | None = None,
+        top_k: Optional[int] = None,
     ) -> list[dict[str, Any]]:
         """
         Apply reranking scores to results and sort them.
@@ -141,7 +141,7 @@ class RerankingStrategy:
         query: str,
         results: list[dict[str, Any]],
         content_key: str = "content",
-        top_k: int | None = None,
+        top_k: Optional[int] = None,
     ) -> list[dict[str, Any]]:
         """
         Rerank search results using the CrossEncoder model.

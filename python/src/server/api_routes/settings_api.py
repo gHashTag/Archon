@@ -25,15 +25,15 @@ class CredentialRequest(BaseModel):
     key: str
     value: str
     is_encrypted: bool = False
-    category: str | None = None
-    description: str | None = None
+    category: Optional[str] = None
+    description: Optional[str] = None
 
 
 class CredentialUpdateRequest(BaseModel):
     value: str
-    is_encrypted: bool | None = None
-    category: str | None = None
-    description: str | None = None
+    is_encrypted: Optional[bool] = None
+    category: Optional[str] = None
+    description: Optional[str] = None
 
 
 class CredentialResponse(BaseModel):
@@ -43,7 +43,7 @@ class CredentialResponse(BaseModel):
 
 # Credential Management Endpoints
 @router.get("/credentials")
-async def list_credentials(category: str | None = None):
+async def list_credentials(category: Optional[str] = None):
     """List all credentials and their categories."""
     try:
         logfire.info(f"Listing credentials | category={category}")

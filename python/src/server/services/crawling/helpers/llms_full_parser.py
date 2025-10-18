@@ -1,4 +1,5 @@
 """
+from typing import Optional
 LLMs-full.txt Section Parser
 
 Parses llms-full.txt files by splitting on H1 headers (# ) to create separate
@@ -132,7 +133,7 @@ def parse_llms_full_sections(content: str, base_url: str) -> list[LLMsFullSectio
 
     # Parse sections, ignoring H1 headers inside code blocks
     sections: list[LLMsFullSection] = []
-    current_h1: str | None = None
+    current_h1: Optional[str] = None
     current_content: list[str] = []
     section_order = 0
 

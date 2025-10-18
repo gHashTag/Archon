@@ -23,7 +23,7 @@ class CrawlerManager:
     """Manages the global crawler instance."""
 
     _instance: Optional["CrawlerManager"] = None
-    _crawler: AsyncWebCrawler | None = None
+    _crawler: Optional[AsyncWebCrawler] = None
     _initialized: bool = False
 
     def __new__(cls):
@@ -149,7 +149,7 @@ class CrawlerManager:
 _crawler_manager = CrawlerManager()
 
 
-async def get_crawler() -> AsyncWebCrawler | None:
+async def get_crawler() -> Optional[AsyncWebCrawler]:
     """Get the global crawler instance."""
     global _crawler_manager
     crawler = await _crawler_manager.get_crawler()

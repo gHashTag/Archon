@@ -1,4 +1,5 @@
 """
+from typing import Optional
 Contextual Embedding Service
 
 Handles generation of contextual embeddings for improved RAG retrieval.
@@ -119,7 +120,7 @@ async def process_chunk_with_context(
     return await generate_contextual_embedding(full_document, content)
 
 
-async def _get_model_choice(provider: str | None = None) -> str:
+async def _get_model_choice(provider: Optional[str] = None) -> str:
     """Get model choice from credential service with centralized defaults."""
     from ..credential_service import credential_service
 

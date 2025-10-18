@@ -27,8 +27,8 @@ class ProjectCreationService:
         self,
         progress_id: str,
         title: str,
-        description: str | None = None,
-        github_repo: str | None = None,
+        description: Optional[str] = None,
+        github_repo: Optional[str] = None,
         **kwargs,
     ) -> tuple[bool, dict[str, Any]]:
         """
@@ -133,8 +133,8 @@ class ProjectCreationService:
         progress_id: str,
         project_id: str,
         title: str,
-        description: str | None,
-        github_repo: str | None,
+        description: Optional[str],
+        github_repo: Optional[str],
     ) -> bool:
         """
         Generate AI documentation for the project.

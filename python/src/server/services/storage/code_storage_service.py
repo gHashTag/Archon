@@ -1136,10 +1136,10 @@ async def add_code_examples_to_supabase(
     summaries: list[str],
     metadatas: list[dict[str, Any]],
     batch_size: int = 20,
-    url_to_full_document: dict[str, str] | None = None,
-    progress_callback: Callable | None = None,
-    provider: str | None = None,
-    embedding_provider: str | None = None,
+    url_to_full_document: Optional[dict[str, str]] = None,
+    progress_callback: Optional[Callable] = None,
+    provider: Optional[str] = None,
+    embedding_provider: Optional[str] = None,
 ):
     """
     Add code examples to the Supabase code_examples table in batches.

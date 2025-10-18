@@ -52,8 +52,8 @@ _threading_service = None
 
 
 async def initialize_threading_service(
-    threading_config: ThreadingConfig | None = None,
-    rate_limit_config: RateLimitConfig | None = None,
+    threading_config: Optional[ThreadingConfig] = None,
+    rate_limit_config: Optional[RateLimitConfig] = None,
 ):
     """Initialize the global threading service for utilities"""
     global _threading_service

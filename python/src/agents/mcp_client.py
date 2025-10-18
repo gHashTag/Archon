@@ -138,7 +138,7 @@ class MCPClient:
 
 
 # Global MCP client instance (created on first use)
-_mcp_client: MCPClient | None = None
+_mcp_client: Optional[MCPClient] = None
 
 
 async def get_mcp_client() -> MCPClient:

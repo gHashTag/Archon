@@ -29,11 +29,11 @@ class CredentialItem:
     """Represents a credential/setting item."""
 
     key: str
-    value: str | None = None
-    encrypted_value: str | None = None
+    value: Optional[str] = None
+    encrypted_value: Optional[str] = None
     is_encrypted: bool = False
-    category: str | None = None
-    description: str | None = None
+    category: Optional[str] = None
+    description: Optional[str] = None
 
 
 
@@ -42,11 +42,11 @@ class CredentialService:
     """Service for managing application credentials and configuration."""
 
     def __init__(self):
-        self._supabase: Client | None = None
+        self._supabase: Optional[Client] = None
         self._cache: dict[str, Any] = {}
         self._cache_initialized = False
-        self._rag_settings_cache: dict[str, Any] | None = None
-        self._rag_cache_timestamp: float | None = None
+        self._rag_settings_cache: Optional[dict[str, Any]] = None
+        self._rag_cache_timestamp: Optional[float] = None
         self._rag_cache_ttl = 300  # 5 minutes TTL for RAG settings cache
 
     def _get_supabase_client(self) -> Client:
@@ -176,7 +176,7 @@ class CredentialService:
 
         return value
 
-    async def get_encrypted_credential_raw(self, key: str) -> str | None:
+    async def get_encrypted_credential_raw(self, key: str) -> Optional[str]:
         """Get the raw encrypted value for a credential (without decryption)."""
         if not self._cache_initialized:
             await self.load_all_credentials()
@@ -500,7 +500,7 @@ class CredentialService:
                 "embedding_model": "",
             }
 
-    async def _get_provider_api_key(self, provider: str) -> str | None:
+    async def _get_provider_api_key(self, provider: str) -> Optional[str]:
         """Get API key for a specific provider."""
         key_mapping = {
             "openai": "OPENAI_API_KEY",
@@ -516,7 +516,7 @@ class CredentialService:
             return await self.get_credential(key_name)
         return "ollama" if provider == "ollama" else None
 
-    def _get_provider_base_url(self, provider: str, rag_settings: dict) -> str | None:
+    def _get_provider_base_url(self, provider: str, rag_settings: dict) -> Optional[str]:
         """Get base URL for provider."""
         if provider == "ollama":
             return rag_settings.get("LLM_BASE_URL", "http://host.docker.internal:11434/v1")

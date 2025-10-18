@@ -27,34 +27,34 @@ class OllamaModel:
     size: int
     digest: str
     capabilities: list[str]  # 'chat', 'embedding', or both
-    embedding_dimensions: int | None = None
-    parameters: dict[str, Any] | None = None
+    embedding_dimensions: Optional[int] = None
+    parameters: Optional[dict[str, Any]] = None
     instance_url: str = ""
-    last_updated: str | None = None
+    last_updated: Optional[str] = None
     
     # Comprehensive API data from /api/show endpoint
-    context_window: int | None = None  # Current/active context length
-    max_context_length: int | None = None  # Maximum supported context length  
-    base_context_length: int | None = None  # Original/base context length
-    custom_context_length: int | None = None  # Custom num_ctx if set
-    architecture: str | None = None
-    block_count: int | None = None
-    attention_heads: int | None = None
-    format: str | None = None
-    parent_model: str | None = None
+    context_window: Optional[int] = None  # Current/active context length
+    max_context_length: Optional[int] = None  # Maximum supported context length  
+    base_context_length: Optional[int] = None  # Original/base context length
+    custom_context_length: Optional[int] = None  # Custom num_ctx if set
+    architecture: Optional[str] = None
+    block_count: Optional[int] = None
+    attention_heads: Optional[int] = None
+    format: Optional[str] = None
+    parent_model: Optional[str] = None
     
     # Extended model metadata
-    family: str | None = None
-    parameter_size: str | None = None
-    quantization: str | None = None
-    parameter_count: int | None = None
-    file_type: int | None = None
-    quantization_version: int | None = None
-    basename: str | None = None
-    size_label: str | None = None
-    license: str | None = None
-    finetune: str | None = None
-    embedding_dimension: int | None = None
+    family: Optional[str] = None
+    parameter_size: Optional[str] = None
+    quantization: Optional[str] = None
+    parameter_count: Optional[int] = None
+    file_type: Optional[int] = None
+    quantization_version: Optional[int] = None
+    basename: Optional[str] = None
+    size_label: Optional[str] = None
+    license: Optional[str] = None
+    finetune: Optional[str] = None
+    embedding_dimension: Optional[int] = None
 
 
 @dataclass
@@ -65,10 +65,10 @@ class ModelCapabilities:
     supports_embedding: bool = False
     supports_function_calling: bool = False
     supports_structured_output: bool = False
-    embedding_dimensions: int | None = None
-    parameter_count: str | None = None
-    model_family: str | None = None
-    quantization: str | None = None
+    embedding_dimensions: Optional[int] = None
+    parameter_count: Optional[str] = None
+    model_family: Optional[str] = None
+    quantization: Optional[str] = None
 
 
 @dataclass
@@ -76,10 +76,10 @@ class InstanceHealthStatus:
     """Health status for an Ollama instance."""
 
     is_healthy: bool
-    response_time_ms: float | None = None
+    response_time_ms: Optional[float] = None
     models_available: int = 0
-    error_message: str | None = None
-    last_checked: str | None = None
+    error_message: Optional[str] = None
+    last_checked: Optional[str] = None
 
 
 class ModelDiscoveryService:
@@ -92,7 +92,7 @@ class ModelDiscoveryService:
         self.cache_ttl = 300  # 5 minutes TTL
         self.discovery_timeout = 30  # 30 seconds timeout for discovery
 
-    def _get_cached_models(self, instance_url: str) -> list[OllamaModel] | None:
+    def _get_cached_models(self, instance_url: str) -> Optional[list[OllamaModel]]:
         """Get cached models if not expired."""
         cache_key = f"models_{instance_url}"
         cached_data = self.model_cache.get(cache_key)
@@ -547,7 +547,7 @@ class ModelDiscoveryService:
 
         return capabilities
 
-    async def _test_embedding_capability_fast(self, model_name: str, instance_url: str) -> int | None:
+    async def _test_embedding_capability_fast(self, model_name: str, instance_url: str) -> Optional[int]:
         """
         Fast embedding capability test with reduced timeout and no retry.
 
@@ -620,7 +620,7 @@ class ModelDiscoveryService:
             pass  # Fail silently for speed
         return False
 
-    async def _test_embedding_capability(self, model_name: str, instance_url: str) -> int | None:
+    async def _test_embedding_capability(self, model_name: str, instance_url: str) -> Optional[int]:
         """
         Test if a model supports embeddings and detect dimensions.
 
@@ -679,7 +679,7 @@ class ModelDiscoveryService:
 
         return False
 
-    async def _get_model_details(self, model_name: str, instance_url: str) -> dict[str, Any] | None:
+    async def _get_model_details(self, model_name: str, instance_url: str) -> Optional[dict[str, Any]]:
         """
         Get comprehensive information about a model from Ollama /api/show endpoint.
         Extracts all available data including context lengths, architecture details,
@@ -930,7 +930,7 @@ class ModelDiscoveryService:
             logger.error(f"Error validating model {model_name} for {required_capability}: {e}")
             return False
 
-    async def get_model_info(self, model_name: str, instance_url: str) -> OllamaModel | None:
+    async def get_model_info(self, model_name: str, instance_url: str) -> Optional[OllamaModel]:
         """
         Get comprehensive information about a specific model.
 

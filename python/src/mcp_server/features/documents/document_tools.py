@@ -39,9 +39,9 @@ def register_document_tools(mcp: FastMCP):
     async def find_documents(
         ctx: Context,
         project_id: str,
-        document_id: str | None = None,  # For getting single document
-        query: str | None = None,  # Search capability
-        document_type: str | None = None,  # Filter by type
+        document_id: Optional[str] = None,  # For getting single document
+        query: Optional[str] = None,  # Search capability
+        document_type: Optional[str] = None,  # Filter by type
         page: int = 1,
         per_page: int = DEFAULT_PAGE_SIZE,
     ) -> str:
@@ -143,12 +143,12 @@ def register_document_tools(mcp: FastMCP):
         ctx: Context,
         action: str,  # "create" | "update" | "delete"
         project_id: str,
-        document_id: str | None = None,
-        title: str | None = None,
-        document_type: str | None = None,
-        content: dict[str, Any] | None = None,
-        tags: list[str] | None = None,
-        author: str | None = None,
+        document_id: Optional[str] = None,
+        title: Optional[str] = None,
+        document_type: Optional[str] = None,
+        content: Optional[dict[str, Any]] = None,
+        tags: Optional[list[str]] = None,
+        author: Optional[str] = None,
     ) -> str:
         """
         Manage documents (consolidated: create/update/delete).

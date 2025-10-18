@@ -29,17 +29,17 @@ router = APIRouter(prefix="/api/ollama", tags=["ollama"])
 class InstanceValidationRequest(BaseModel):
     """Request for validating an Ollama instance."""
     instance_url: str = Field(..., description="URL of the Ollama instance")
-    instance_type: str | None = Field(None, description="Instance type: chat, embedding, or both")
-    timeout_seconds: int | None = Field(30, description="Timeout for validation in seconds")
+    instance_type: Optional[str] = Field(None, description="Instance type: chat, embedding, or both")
+    timeout_seconds: Optional[int] = Field(30, description="Timeout for validation in seconds")
 
 
 class InstanceValidationResponse(BaseModel):
     """Response for instance validation."""
     is_valid: bool
     instance_url: str
-    response_time_ms: float | None
+    response_time_ms: Optional[float]
     models_available: int
-    error_message: str | None
+    error_message: Optional[str]
     capabilities: dict[str, Any]
     health_status: dict[str, Any]
 
@@ -48,7 +48,7 @@ class ModelDiscoveryRequest(BaseModel):
     """Request for model discovery."""
     instance_urls: list[str] = Field(..., description="List of Ollama instance URLs")
     include_capabilities: bool = Field(True, description="Include model capability detection")
-    cache_ttl: int | None = Field(300, description="Cache TTL in seconds")
+    cache_ttl: Optional[int] = Field(300, description="Cache TTL in seconds")
 
 
 class ModelDiscoveryResponse(BaseModel):
@@ -65,7 +65,7 @@ class EmbeddingRouteRequest(BaseModel):
     """Request for embedding routing analysis."""
     model_name: str = Field(..., description="Name of the embedding model")
     instance_url: str = Field(..., description="URL of the Ollama instance")
-    text_sample: str | None = Field(None, description="Optional text sample for optimization")
+    text_sample: Optional[str] = Field(None, description="Optional text sample for optimization")
 
 
 class EmbeddingRouteResponse(BaseModel):
@@ -77,7 +77,7 @@ class EmbeddingRouteResponse(BaseModel):
     confidence: float
     fallback_applied: bool
     routing_strategy: str
-    performance_score: float | None
+    performance_score: Optional[float]
 
 
 @router.get("/models", response_model=ModelDiscoveryResponse)
@@ -386,17 +386,17 @@ class StoredModelInfo(BaseModel):
     name: str
     host: str
     model_type: str  # 'chat', 'embedding', 'multimodal'
-    size_mb: int | None
-    context_length: int | None
-    parameters: str | None
+    size_mb: Optional[int]
+    context_length: Optional[int]
+    parameters: Optional[str]
     capabilities: list[str]
     archon_compatibility: str  # 'full', 'partial', 'limited'
     compatibility_features: list[str]
     limitations: list[str]
-    performance_rating: str | None  # 'high', 'medium', 'low'
-    description: str | None
+    performance_rating: Optional[str]  # 'high', 'medium', 'low'
+    description: Optional[str]
     last_updated: str
-    embedding_dimensions: int | None = None  # Dimensions for embedding models
+    embedding_dimensions: Optional[int] = None  # Dimensions for embedding models
 
 
 class ModelListResponse(BaseModel):
@@ -404,7 +404,7 @@ class ModelListResponse(BaseModel):
     models: list[StoredModelInfo]
     total_count: int
     instances_checked: int
-    last_discovery: str | None
+    last_discovery: Optional[str]
     cache_status: str
 
 
@@ -751,7 +751,7 @@ def _determine_model_type(model) -> str:
         return 'chat'  # Default to chat for unknown models
 
 
-def _extract_model_size(model) -> int | None:
+def _extract_model_size(model) -> Optional[int]:
     """Extract model size in MB from model information."""
     # This would need to be enhanced based on actual Ollama model data structure
     model_name = model.name.lower()
@@ -773,7 +773,7 @@ def _extract_model_size(model) -> int | None:
     return None
 
 
-def _extract_context_length(model) -> int | None:
+def _extract_context_length(model) -> Optional[int]:
     """Extract context length from model information."""
     model_name = model.name.lower()
 
@@ -790,7 +790,7 @@ def _extract_context_length(model) -> int | None:
     return 4096  # Default context length
 
 
-def _extract_parameters(model) -> str | None:
+def _extract_parameters(model) -> Optional[str]:
     """Extract parameter count from model name."""
     model_name = model.name.lower()
 
@@ -803,7 +803,7 @@ def _extract_parameters(model) -> str | None:
     return None
 
 
-def _assess_performance_rating(model) -> str | None:
+def _assess_performance_rating(model) -> Optional[str]:
     """Assess performance rating based on model characteristics."""
     model_name = model.name.lower()
 
@@ -822,7 +822,7 @@ def _assess_performance_rating(model) -> str | None:
     return 'medium'  # Default to medium
 
 
-def _generate_model_description(model) -> str | None:
+def _generate_model_description(model) -> Optional[str]:
     """Generate a description for the model based on its characteristics."""
     model_name = model.name
     model_type = _determine_model_type(model)

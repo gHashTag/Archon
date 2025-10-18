@@ -14,8 +14,8 @@ class EmbeddingError(Exception):
     def __init__(
         self,
         message: str,
-        text_preview: str | None = None,
-        batch_index: int | None = None,
+        text_preview: Optional[str] = None,
+        batch_index: Optional[int] = None,
         **kwargs,
     ):
         """
@@ -51,7 +51,7 @@ class EmbeddingQuotaExhaustedError(EmbeddingError):
     as continuing would be pointless without ability to create embeddings.
     """
 
-    def __init__(self, message: str, tokens_used: int | None = None, **kwargs):
+    def __init__(self, message: str, tokens_used: Optional[int] = None, **kwargs):
         super().__init__(message, **kwargs)
         self.tokens_used = tokens_used
         if tokens_used:
@@ -91,7 +91,7 @@ class EmbeddingAPIError(EmbeddingError):
     to continue with other items.
     """
 
-    def __init__(self, message: str, original_error: Exception | None = None, **kwargs):
+    def __init__(self, message: str, original_error: Optional[Exception] = None, **kwargs):
         super().__init__(message, **kwargs)
         self.original_error = original_error
         if original_error:
@@ -107,7 +107,7 @@ class EmbeddingAuthenticationError(EmbeddingError):
     as continuing would be pointless without valid API access.
     """
 
-    def __init__(self, message: str, api_key_prefix: str | None = None, **kwargs):
+    def __init__(self, message: str, api_key_prefix: Optional[str] = None, **kwargs):
         super().__init__(message, **kwargs)
         # Store masked API key prefix for debugging
         self.api_key_prefix = api_key_prefix[:3] + "…" if api_key_prefix and len(api_key_prefix) >= 3 else None
@@ -123,7 +123,7 @@ class EmbeddingValidationError(EmbeddingError):
     a serious issue if it does.
     """
 
-    def __init__(self, message: str, embedding_sample: list | None = None, **kwargs):
+    def __init__(self, message: str, embedding_sample: Optional[list] = None, **kwargs):
         super().__init__(message, **kwargs)
         if embedding_sample:
             # Store first 10 values as sample

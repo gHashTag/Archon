@@ -82,7 +82,7 @@ class RateLimiter:
         self.semaphore = asyncio.Semaphore(config.max_concurrent)
         self._lock = asyncio.Lock()
 
-    async def acquire(self, estimated_tokens: int = 8000, progress_callback: Callable | None = None) -> bool:
+    async def acquire(self, estimated_tokens: int = 8000, progress_callback: Optional[Callable] = None) -> bool:
         """Acquire permission to make API call with token awareness
         
         Args:
@@ -259,7 +259,7 @@ class MemoryAdaptiveDispatcher:
         items: list[Any],
         process_func: Callable,
         mode: ProcessingMode = ProcessingMode.CPU_INTENSIVE,
-        progress_callback: Callable | None = None,
+        progress_callback: Optional[Callable] = None,
         enable_worker_tracking: bool = False,
     ) -> list[Any]:
         """Process items with adaptive concurrency control"""
@@ -408,8 +408,8 @@ class ThreadingService:
 
     def __init__(
         self,
-        threading_config: ThreadingConfig | None = None,
-        rate_limit_config: RateLimitConfig | None = None,
+        threading_config: Optional[ThreadingConfig] = None,
+        rate_limit_config: Optional[RateLimitConfig] = None,
     ):
         self.config = threading_config or ThreadingConfig()
         self.rate_limiter = RateLimiter(rate_limit_config or RateLimitConfig())
@@ -456,7 +456,7 @@ class ThreadingService:
         logfire_logger.info("Threading service stopped")
 
     @asynccontextmanager
-    async def rate_limited_operation(self, estimated_tokens: int = 8000, progress_callback: Callable | None = None):
+    async def rate_limited_operation(self, estimated_tokens: int = 8000, progress_callback: Optional[Callable] = None):
         """Context manager for rate-limited operations
         
         Args:
@@ -493,7 +493,7 @@ class ThreadingService:
         items: list[Any],
         process_func: Callable,
         mode: ProcessingMode = ProcessingMode.CPU_INTENSIVE,
-        progress_callback: Callable | None = None,
+        progress_callback: Optional[Callable] = None,
         enable_worker_tracking: bool = False,
     ) -> list[Any]:
         """Process items in batches with optimal threading"""
@@ -559,7 +559,7 @@ class ThreadingService:
 
 
 # Global threading service instance
-_threading_service: ThreadingService | None = None
+_threading_service: Optional[ThreadingService] = None
 
 
 def get_threading_service() -> ThreadingService:

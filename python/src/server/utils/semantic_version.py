@@ -1,11 +1,12 @@
 """
+from typing import Optional
 Semantic version parsing and comparison utilities.
 """
 
 import re
 
 
-def parse_version(version_string: str) -> tuple[int, int, int, str | None]:
+def parse_version(version_string: str) -> Optional[tuple[int, int, int, str]]:
     """
     Parse a semantic version string into major, minor, patch, and optional prerelease.
 

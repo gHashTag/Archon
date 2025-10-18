@@ -16,8 +16,8 @@ class VersionService:
     """Service for checking Archon version against GitHub releases."""
 
     def __init__(self):
-        self._cache: dict[str, Any] | None = None
-        self._cache_time: datetime | None = None
+        self._cache: Optional[dict[str, Any]] = None
+        self._cache_time: Optional[datetime] = None
         self._cache_ttl = 3600  # 1 hour cache TTL
 
     def _is_cache_valid(self) -> bool:
@@ -28,7 +28,7 @@ class VersionService:
         age = datetime.now() - self._cache_time
         return age < timedelta(seconds=self._cache_ttl)
 
-    async def get_latest_release(self) -> dict[str, Any] | None:
+    async def get_latest_release(self) -> Optional[dict[str, Any]]:
         """
         Fetch latest release information from GitHub API.
 

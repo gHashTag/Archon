@@ -28,7 +28,7 @@ class BaseSearchStrategy:
         self,
         query_embedding: list[float],
         match_count: int,
-        filter_metadata: dict | None = None,
+        filter_metadata: Optional[dict] = None,
         table_rpc: str = "match_archon_crawled_pages",
     ) -> list[dict[str, Any]]:
         """

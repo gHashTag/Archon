@@ -23,10 +23,10 @@ class DocumentStorageService(BaseStorageService):
         filename: str,
         source_id: str,
         knowledge_type: str = "documentation",
-        tags: list[str] | None = None,
+        tags: Optional[list[str]] = None,
         extract_code_examples: bool = True,
-        progress_callback: Any | None = None,
-        cancellation_check: Any | None = None,
+        progress_callback: Optional[Any] = None,
+        cancellation_check: Optional[Any] = None,
     ) -> tuple[bool, dict[str, Any]]:
         """
         Upload and process a document file with progress reporting.

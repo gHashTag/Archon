@@ -120,7 +120,7 @@ class BaseStorageService(ABC):
         return chunks
 
     async def smart_chunk_text_async(
-        self, text: str, chunk_size: int = 5000, progress_callback: Callable | None = None
+        self, text: str, chunk_size: int = 5000, progress_callback: Optional[Callable] = None
     ) -> list[str]:
         """
         Async version of smart_chunk_text with optional progress reporting.
@@ -164,7 +164,7 @@ class BaseStorageService(ABC):
                 raise
 
     def extract_metadata(
-        self, chunk: str, base_metadata: dict[str, Any] | None = None
+        self, chunk: str, base_metadata: Optional[dict[str, Any]] = None
     ) -> dict[str, Any]:
         """
         Extract metadata from a text chunk.
@@ -218,7 +218,7 @@ class BaseStorageService(ABC):
         items: list[Any],
         process_func: Callable,
         batch_size: int = 20,
-        progress_callback: Callable | None = None,
+        progress_callback: Optional[Callable] = None,
         description: str = "Processing",
     ) -> list[Any]:
         """

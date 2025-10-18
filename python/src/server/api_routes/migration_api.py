@@ -1,4 +1,5 @@
 """
+from typing import Optional
 API routes for database migration tracking and management.
 """
 
@@ -20,7 +21,7 @@ class MigrationRecord(BaseModel):
     version: str
     migration_name: str
     applied_at: datetime
-    checksum: str | None = None
+    checksum: Optional[str] = None
 
 
 class PendingMigration(BaseModel):
@@ -30,7 +31,7 @@ class PendingMigration(BaseModel):
     name: str
     sql_content: str
     file_path: str
-    checksum: str | None = None
+    checksum: Optional[str] = None
 
 
 class MigrationStatusResponse(BaseModel):
@@ -59,7 +60,7 @@ router = APIRouter(prefix="/api/migrations", tags=["migrations"])
 
 @router.get("/status", response_model=MigrationStatusResponse)
 async def get_migration_status(
-    response: Response, if_none_match: str | None = Header(None)
+    response: Response, if_none_match: Optional[str] = Header(None)
 ):
     """
     Get current migration status including pending and applied migrations.
@@ -96,7 +97,7 @@ async def get_migration_status(
 
 
 @router.get("/history", response_model=MigrationHistoryResponse)
-async def get_migration_history(response: Response, if_none_match: str | None = Header(None)):
+async def get_migration_history(response: Response, if_none_match: Optional[str] = Header(None)):
     """
     Get history of applied migrations.
 

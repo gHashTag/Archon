@@ -1,4 +1,5 @@
 """
+from typing import Optional
 Environment configuration management for the MCP server.
 """
 
@@ -23,7 +24,7 @@ class EnvironmentConfig:
     supabase_url: str
     supabase_service_key: str
     port: int  # Required - no default
-    openai_api_key: str | None = None
+    openai_api_key: Optional[str] = None
     host: str = "0.0.0.0"
     transport: str = "sse"
 
@@ -220,7 +221,7 @@ def get_config() -> EnvironmentConfig:
 def get_rag_strategy_config() -> RAGStrategyConfig:
     """Load RAG strategy configuration from environment variables."""
 
-    def str_to_bool(value: str | None) -> bool:
+    def str_to_bool(value: Optional[str]) -> bool:
         """Convert string environment variable to boolean."""
         if value is None:
             return False

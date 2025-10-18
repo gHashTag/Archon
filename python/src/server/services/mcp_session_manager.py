@@ -1,4 +1,5 @@
 """
+from typing import Optional
 MCP Session Manager
 
 This module provides simplified session management for MCP server connections,
@@ -73,7 +74,7 @@ class SimplifiedSessionManager:
 
 
 # Global session manager instance
-_session_manager: SimplifiedSessionManager | None = None
+_session_manager: Optional[SimplifiedSessionManager] = None
 
 
 def get_session_manager() -> SimplifiedSessionManager:

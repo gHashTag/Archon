@@ -32,7 +32,7 @@ class MCPServiceClient:
             pool=5.0,
         )
 
-    def _get_headers(self, request_id: str | None = None) -> dict[str, str]:
+    def _get_headers(self, request_id: Optional[str] = None) -> dict[str, str]:
         """Get common headers for internal requests"""
         headers = {"X-Service-Auth": self.service_auth, "Content-Type": "application/json"}
         if request_id:
@@ -41,7 +41,7 @@ class MCPServiceClient:
             headers["X-Request-ID"] = str(uuid.uuid4())
         return headers
 
-    async def crawl_url(self, url: str, options: dict[str, Any] | None = None) -> dict[str, Any]:
+    async def crawl_url(self, url: str, options: Optional[dict[str, Any]] = None) -> dict[str, Any]:
         """
         Crawl a URL by calling the API service's knowledge-items/crawl endpoint.
         Transforms MCP's simple format to the API's KnowledgeItemRequest format.
@@ -97,7 +97,7 @@ class MCPServiceClient:
     async def search(
         self,
         query: str,
-        source_filter: str | None = None,
+        source_filter: Optional[str] = None,
         match_count: int = 5,
         use_reranking: bool = False,
     ) -> dict[str, Any]:

@@ -73,7 +73,7 @@ class EmbeddingRouter:
         self.cache_ttl = 300  # 5 minutes cache TTL
 
     async def route_embedding(self, model_name: str, instance_url: str,
-                            text_content: str | None = None) -> RoutingDecision:
+                            text_content: Optional[str] = None) -> RoutingDecision:
         """
         Determine the optimal routing for an embedding operation.
 
@@ -129,7 +129,7 @@ class EmbeddingRouter:
                 routing_strategy="emergency-fallback"
             )
 
-    async def _detect_model_dimensions(self, model_name: str, instance_url: str) -> int | None:
+    async def _detect_model_dimensions(self, model_name: str, instance_url: str) -> Optional[int]:
         """
         Detect embedding dimensions using the ModelDiscoveryService.
 

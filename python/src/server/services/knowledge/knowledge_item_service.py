@@ -27,8 +27,8 @@ class KnowledgeItemService:
         self,
         page: int = 1,
         per_page: int = 20,
-        knowledge_type: str | None = None,
-        search: str | None = None,
+        knowledge_type: Optional[str] = None,
+        search: Optional[str] = None,
     ) -> dict[str, Any]:
         """
         List knowledge items with pagination and filtering.
@@ -199,7 +199,7 @@ class KnowledgeItemService:
             safe_logfire_error(f"Failed to list knowledge items | error={str(e)}")
             raise
 
-    async def get_item(self, source_id: str) -> dict[str, Any] | None:
+    async def get_item(self, source_id: str) -> Optional[dict[str, Any]]:
         """
         Get a single knowledge item by source ID.
 

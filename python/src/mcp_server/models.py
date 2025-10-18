@@ -44,7 +44,7 @@ class UserStory(BaseModel):
         default_factory=list, description="List of acceptance criteria"
     )
     priority: Priority = Field(default=Priority.MEDIUM, description="Priority level")
-    estimated_effort: str | None = Field(
+    estimated_effort: Optional[str] = Field(
         None, description="Effort estimate (e.g., 'Small', 'Medium', 'Large')"
     )
     status: str = Field(default="draft", description="Status of the user story")
@@ -126,7 +126,7 @@ class GeneralDocument(BaseModel):
     """
 
     # Document Metadata
-    id: str | None = Field(None, description="Document UUID (auto-generated)")
+    id: Optional[str] = Field(None, description="Document UUID (auto-generated)")
     project_id: str = Field(..., description="Associated project UUID")
     document_type: DocumentType = Field(..., description="Type of document")
     title: str = Field(..., description="Document title")
@@ -140,11 +140,11 @@ class GeneralDocument(BaseModel):
     version: str = Field(default="1.0", description="Document version")
     status: str = Field(default="draft", description="Document status (draft, review, approved)")
     tags: list[str] = Field(default_factory=list, description="Document tags for categorization")
-    author: str | None = Field(None, description="Document author")
+    author: Optional[str] = Field(None, description="Document author")
 
     # Timestamps
-    created_at: datetime | None = Field(None, description="Creation timestamp")
-    updated_at: datetime | None = Field(None, description="Last update timestamp")
+    created_at: Optional[datetime] = Field(None, description="Creation timestamp")
+    updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
 
     @validator("created_at", "updated_at", pre=True, always=True)
     def set_timestamps(cls, v):
@@ -159,18 +159,18 @@ class CreateDocumentRequest(BaseModel):
     title: str = Field(..., description="Document title")
     content: dict[str, Any] = Field(default_factory=dict, description="Document content")
     tags: list[str] = Field(default_factory=list, description="Document tags")
-    author: str | None = Field(None, description="Document author")
+    author: Optional[str] = Field(None, description="Document author")
 
 
 class UpdateDocumentRequest(BaseModel):
     """Request model for updating an existing document"""
 
-    title: str | None = Field(None, description="Updated document title")
-    content: dict[str, Any] | None = Field(None, description="Updated document content")
-    status: str | None = Field(None, description="Updated document status")
-    tags: list[str] | None = Field(None, description="Updated document tags")
-    author: str | None = Field(None, description="Updated document author")
-    version: str | None = Field(None, description="Updated document version")
+    title: Optional[str] = Field(None, description="Updated document title")
+    content: Optional[dict[str, Any]] = Field(None, description="Updated document content")
+    status: Optional[str] = Field(None, description="Updated document status")
+    tags: Optional[list[str]] = Field(None, description="Updated document tags")
+    author: Optional[str] = Field(None, description="Updated document author")
+    version: Optional[str] = Field(None, description="Updated document version")
 
 
 # Helper functions for creating default documents

@@ -60,7 +60,7 @@ class TaskService:
         assignee: str = "User",
         task_order: int = 0,
         priority: str = "medium",
-        feature: str | None = None,
+        feature: Optional[str] = None,
         sources: list[dict[str, Any]] = None,
         code_examples: list[dict[str, Any]] = None,
     ) -> tuple[bool, dict[str, Any]]:

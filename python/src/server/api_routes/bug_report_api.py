@@ -39,8 +39,8 @@ class BugReportRequest(BaseModel):
 
 class BugReportResponse(BaseModel):
     success: bool
-    issue_number: int | None = None
-    issue_url: str | None = None
+    issue_number: Optional[int] = None
+    issue_url: Optional[str] = None
     message: str
 
 

@@ -40,11 +40,11 @@ class DocumentStorageOperations:
         request: dict[str, Any],
         crawl_type: str,
         original_source_id: str,
-        progress_callback: Callable | None = None,
-        cancellation_check: Callable | None = None,
-        source_url: str | None = None,
-        source_display_name: str | None = None,
-        url_to_page_id: dict[str, str] | None = None,
+        progress_callback: Optional[Callable] = None,
+        cancellation_check: Optional[Callable] = None,
+        source_url: Optional[str] = None,
+        source_display_name: Optional[str] = None,
+        url_to_page_id: Optional[dict[str, str]] = None,
     ) -> dict[str, Any]:
         """
         Process crawled documents and store them in the database.
@@ -294,8 +294,8 @@ class DocumentStorageOperations:
         all_contents: list[str],
         source_word_counts: dict[str, int],
         request: dict[str, Any],
-        source_url: str | None = None,
-        source_display_name: str | None = None,
+        source_url: Optional[str] = None,
+        source_display_name: Optional[str] = None,
     ):
         """
         Create or update source records in the database.
@@ -440,10 +440,10 @@ class DocumentStorageOperations:
         crawl_results: list[dict],
         url_to_full_document: dict[str, str],
         source_id: str,
-        progress_callback: Callable | None = None,
-        cancellation_check: Callable[[], None] | None = None,
-        provider: str | None = None,
-        embedding_provider: str | None = None,
+        progress_callback: Optional[Callable] = None,
+        cancellation_check: Optional[Callable[[], None]] = None,
+        provider: Optional[str] = None,
+        embedding_provider: Optional[str] = None,
     ) -> int:
         """
         Extract code examples from crawled documents and store them.

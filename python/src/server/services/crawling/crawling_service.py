@@ -196,7 +196,7 @@ class CrawlingService:
         )
 
     async def crawl_markdown_file(
-        self, url: str, progress_callback: Callable[[str, int, str], Awaitable[None]] | None = None
+        self, url: str, progress_callback: Optional[Callable[[str, int, str], Awaitable[None]]] = None
     ) -> list[dict[str, Any]]:
         """Crawl a .txt or markdown file."""
         return await self.single_page_strategy.crawl_markdown_file(
@@ -212,9 +212,9 @@ class CrawlingService:
     async def crawl_batch_with_progress(
         self,
         urls: list[str],
-        max_concurrent: int | None = None,
-        progress_callback: Callable[[str, int, str], Awaitable[None]] | None = None,
-        link_text_fallbacks: dict[str, str] | None = None,
+        max_concurrent: Optional[int] = None,
+        progress_callback: Optional[Callable[[str, int, str], Awaitable[None]]] = None,
+        link_text_fallbacks: Optional[dict[str, str]] = None,
     ) -> list[dict[str, Any]]:
         """Batch crawl multiple URLs in parallel."""
         return await self.batch_strategy.crawl_batch_with_progress(
@@ -231,8 +231,8 @@ class CrawlingService:
         self,
         start_urls: list[str],
         max_depth: int = 3,
-        max_concurrent: int | None = None,
-        progress_callback: Callable[[str, int, str], Awaitable[None]] | None = None,
+        max_concurrent: Optional[int] = None,
+        progress_callback: Optional[Callable[[str, int, str], Awaitable[None]]] = None,
     ) -> list[dict[str, Any]]:
         """Recursively crawl internal links from start URLs."""
         return await self.recursive_strategy.crawl_recursive_with_progress(

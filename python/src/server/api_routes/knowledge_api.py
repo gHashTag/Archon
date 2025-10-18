@@ -1,4 +1,5 @@
 """
+from typing import Optional
 Knowledge Management API Module
 
 This module handles all knowledge base operations including:
@@ -175,7 +176,7 @@ class CrawlRequest(BaseModel):
 
 class RagQueryRequest(BaseModel):
     query: str
-    source: str | None = None
+    source: Optional[str] = None
     match_count: int = 5
     return_mode: str = "chunks"  # "chunks" or "pages"
 
@@ -237,7 +238,7 @@ async def get_knowledge_sources():
 
 @router.get("/knowledge-items")
 async def get_knowledge_items(
-    page: int = 1, per_page: int = 20, knowledge_type: str | None = None, search: str | None = None
+    page: int = 1, per_page: int = 20, knowledge_type: Optional[str] = None, search: Optional[str] = None
 ):
     """Get knowledge items with pagination and filtering."""
     try:
@@ -257,7 +258,7 @@ async def get_knowledge_items(
 
 @router.get("/knowledge-items/summary")
 async def get_knowledge_items_summary(
-    page: int = 1, per_page: int = 20, knowledge_type: str | None = None, search: str | None = None
+    page: int = 1, per_page: int = 20, knowledge_type: Optional[str] = None, search: Optional[str] = None
 ):
     """
     Get lightweight summaries of knowledge items.
@@ -363,7 +364,7 @@ async def delete_knowledge_item(source_id: str):
 @router.get("/knowledge-items/{source_id}/chunks")
 async def get_knowledge_item_chunks(
     source_id: str,
-    domain_filter: str | None = None,
+    domain_filter: Optional[str] = None,
     limit: int = 20,
     offset: int = 0
 ):
@@ -894,7 +895,7 @@ async def _perform_crawl_with_progress(
 @router.post("/documents/upload")
 async def upload_document(
     file: UploadFile = File(...),
-    tags: str | None = Form(None),
+    tags: Optional[str] = Form(None),
     knowledge_type: str = Form("technical"),
     extract_code_examples: bool = Form(True),
 ):

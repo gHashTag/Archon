@@ -20,9 +20,9 @@ class MCPErrorFormatter:
     def format_error(
         error_type: str,
         message: str,
-        details: dict[str, Any] | None = None,
-        suggestion: str | None = None,
-        http_status: int | None = None,
+        details: Optional[dict[str, Any]] = None,
+        suggestion: Optional[str] = None,
+        http_status: Optional[int] = None,
     ) -> str:
         """
         Format an error response with consistent structure.
@@ -100,7 +100,7 @@ class MCPErrorFormatter:
         )
 
     @staticmethod
-    def from_exception(exception: Exception, operation: str, context: dict[str, Any] | None = None) -> str:
+    def from_exception(exception: Exception, operation: str, context: Optional[dict[str, Any]] = None) -> str:
         """
         Format error from exception.
 
@@ -148,7 +148,7 @@ class MCPErrorFormatter:
         )
 
 
-def _get_suggestion_for_status(status_code: int) -> str | None:
+def _get_suggestion_for_status(status_code: int) -> Optional[str]:
     """Get helpful suggestion based on HTTP status code."""
     suggestions = {
         400: "Check that all required parameters are provided and valid",

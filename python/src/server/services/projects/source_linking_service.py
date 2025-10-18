@@ -61,8 +61,8 @@ class SourceLinkingService:
     def update_project_sources(
         self,
         project_id: str,
-        technical_sources: list[str] | None = None,
-        business_sources: list[str] | None = None,
+        technical_sources: Optional[list[str]] = None,
+        business_sources: Optional[list[str]] = None,
     ) -> tuple[bool, dict[str, Any]]:
         """
         Update project sources, replacing existing ones if provided.

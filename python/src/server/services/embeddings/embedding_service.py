@@ -43,7 +43,7 @@ class EmbeddingBatchResult:
         self.texts_processed.append(text)
         self.success_count += 1
 
-    def add_failure(self, text: str, error: Exception, batch_index: int | None = None):
+    def add_failure(self, text: str, error: Exception, batch_index: Optional[int] = None):
         """Add a failed item with error details."""
         error_dict = {
             "text": text[:200] if text else None,
@@ -76,7 +76,7 @@ class EmbeddingProviderAdapter(ABC):
         self,
         texts: list[str],
         model: str,
-        dimensions: int | None = None,
+        dimensions: Optional[int] = None,
     ) -> list[list[float]]:
         """Create embeddings for the given texts."""
 
@@ -91,7 +91,7 @@ class OpenAICompatibleEmbeddingAdapter(EmbeddingProviderAdapter):
         self,
         texts: list[str],
         model: str,
-        dimensions: int | None = None,
+        dimensions: Optional[int] = None,
     ) -> list[list[float]]:
         request_args: dict[str, Any] = {
             "model": model,
@@ -111,7 +111,7 @@ class GoogleEmbeddingAdapter(EmbeddingProviderAdapter):
         self,
         texts: list[str],
         model: str,
-        dimensions: int | None = None,
+        dimensions: Optional[int] = None,
     ) -> list[list[float]]:
         try:
             google_api_key = await credential_service.get_credential("GOOGLE_API_KEY")
@@ -150,7 +150,7 @@ class GoogleEmbeddingAdapter(EmbeddingProviderAdapter):
         api_key: str,
         model: str,
         text: str,
-        dimensions: int | None = None,
+        dimensions: Optional[int] = None,
     ) -> list[float]:
         if model.startswith("models/"):
             url_model = model[len("models/") :]
@@ -233,7 +233,7 @@ async def _maybe_await(value: Any) -> Any:
 get_openai_client = get_llm_client
 
 
-async def create_embedding(text: str, provider: str | None = None) -> list[float]:
+async def create_embedding(text: str, provider: Optional[str] = None) -> list[float]:
     """
     Create an embedding for a single text using the configured provider.
 
@@ -295,8 +295,8 @@ async def create_embedding(text: str, provider: str | None = None) -> list[float
 
 async def create_embeddings_batch(
     texts: list[str],
-    progress_callback: Any | None = None,
-    provider: str | None = None,
+    progress_callback: Optional[Any] = None,
+    provider: Optional[str] = None,
 ) -> EmbeddingBatchResult:
     """
     Create embeddings for multiple texts with graceful failure handling.
@@ -525,7 +525,7 @@ async def create_embeddings_batch(
 
 
 # Deprecated functions - kept for backward compatibility
-async def get_openai_api_key() -> str | None:
+async def get_openai_api_key() -> Optional[str]:
     """
     DEPRECATED: Use os.getenv("OPENAI_API_KEY") directly.
     API key is loaded into environment at startup.

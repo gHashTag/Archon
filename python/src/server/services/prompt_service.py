@@ -1,4 +1,5 @@
 """
+from typing import Optional
 Prompt Service Module for Archon
 
 This module provides a singleton service for managing AI agent prompts.
@@ -20,7 +21,7 @@ class PromptService:
 
     _instance = None
     _prompts: dict[str, str] = {}
-    _last_loaded: datetime | None = None
+    _last_loaded: Optional[datetime] = None
 
     def __new__(cls):
         """Ensure singleton pattern."""
@@ -53,7 +54,7 @@ class PromptService:
             # Continue with empty prompts rather than crash
             self._prompts = {}
 
-    def get_prompt(self, prompt_name: str, default: str | None = None) -> str:
+    def get_prompt(self, prompt_name: str, default: Optional[str] = None) -> str:
         """
         Get a prompt by name.
 
@@ -86,7 +87,7 @@ class PromptService:
         """Get a list of all available prompt names."""
         return list(self._prompts.keys())
 
-    def get_last_loaded_time(self) -> datetime | None:
+    def get_last_loaded_time(self) -> Optional[datetime]:
         """Get the timestamp of when prompts were last loaded."""
         return self._last_loaded
 

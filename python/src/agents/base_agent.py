@@ -21,9 +21,9 @@ logger = logging.getLogger(__name__)
 class ArchonDependencies:
     """Base dependencies for all Archon agents."""
 
-    request_id: str | None = None
-    user_id: str | None = None
-    trace_id: str | None = None
+    request_id: Optional[str] = None
+    user_id: Optional[str] = None
+    trace_id: Optional[str] = None
 
 
 # Type variables for generic agent typing
@@ -36,8 +36,8 @@ class BaseAgentOutput(BaseModel):
 
     success: bool
     message: str
-    data: dict[str, Any] | None = None
-    errors: list[str] | None = None
+    data: Optional[dict[str, Any]] = None
+    errors: Optional[list[str]] = None
 
 
 class RateLimitHandler:
@@ -124,7 +124,7 @@ class RateLimitHandler:
 
         raise Exception(f"Failed after {self.max_retries} retries")
 
-    def _extract_wait_time(self, error_message: str) -> float | None:
+    def _extract_wait_time(self, error_message: str) -> Optional[float]:
         """Extract wait time from OpenAI error message."""
         try:
             # Look for patterns like "Please try again in 1.242s"

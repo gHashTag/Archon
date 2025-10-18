@@ -39,8 +39,8 @@ def register_version_tools(mcp: FastMCP):
     async def find_versions(
         ctx: Context,
         project_id: str,
-        field_name: str | None = None,
-        version_number: int | None = None,  # For getting specific version
+        field_name: Optional[str] = None,
+        version_number: Optional[int] = None,  # For getting specific version
         page: int = 1,
         per_page: int = DEFAULT_PAGE_SIZE,
     ) -> str:
@@ -133,10 +133,10 @@ def register_version_tools(mcp: FastMCP):
         action: str,  # "create" | "restore"
         project_id: str,
         field_name: str,
-        version_number: int | None = None,
+        version_number: Optional[int] = None,
         content: dict[str, Any] | list[dict[str, Any]] | None = None,
-        change_summary: str | None = None,
-        document_id: str | None = None,
+        change_summary: Optional[str] = None,
+        document_id: Optional[str] = None,
         created_by: str = "system",
     ) -> str:
         """

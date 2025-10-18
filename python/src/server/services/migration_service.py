@@ -43,7 +43,7 @@ class MigrationService:
     """Service for managing database migrations."""
 
     def __init__(self):
-        self._supabase: Client | None = None
+        self._supabase: Optional[Client] = None
         # Handle both Docker (/app/migration) and local (./migration) environments
         if Path("/app/migration").exists():
             self._migrations_dir = Path("/app/migration")

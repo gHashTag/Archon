@@ -25,10 +25,10 @@ logger = logging.getLogger(__name__)
 class RagDependencies(ArchonDependencies):
     """Dependencies for RAG operations."""
 
-    project_id: str | None = None
-    source_filter: str | None = None
+    project_id: Optional[str] = None
+    source_filter: Optional[str] = None
     match_count: int = 5
-    progress_callback: Any | None = None  # Callback for progress updates
+    progress_callback: Optional[Any] = None  # Callback for progress updates
 
 
 class RagQueryResult(BaseModel):
@@ -36,7 +36,7 @@ class RagQueryResult(BaseModel):
 
     query_type: str = Field(description="Type of query: search, explain, summarize, compare")
     original_query: str = Field(description="The original user query")
-    refined_query: str | None = Field(
+    refined_query: Optional[str] = Field(
         description="Refined query used for search if different from original"
     )
     results_found: int = Field(description="Number of relevant results found")
@@ -131,7 +131,7 @@ class RagAgent(BaseAgent[RagDependencies, str]):
         # Register tools for RAG operations
         @agent.tool
         async def search_documents(
-            ctx: RunContext[RagDependencies], query: str, source_filter: str | None = None
+            ctx: RunContext[RagDependencies], query: str, source_filter: Optional[str] = None
         ) -> str:
             """Search through documents using RAG query."""
             try:
@@ -227,7 +227,7 @@ class RagAgent(BaseAgent[RagDependencies, str]):
 
         @agent.tool
         async def search_code_examples(
-            ctx: RunContext[RagDependencies], query: str, source_filter: str | None = None
+            ctx: RunContext[RagDependencies], query: str, source_filter: Optional[str] = None
         ) -> str:
             """Search for code examples related to the query."""
             try:
@@ -329,8 +329,8 @@ class RagAgent(BaseAgent[RagDependencies, str]):
     async def run_conversation(
         self,
         user_message: str,
-        project_id: str | None = None,
-        source_filter: str | None = None,
+        project_id: Optional[str] = None,
+        source_filter: Optional[str] = None,
         match_count: int = 5,
         user_id: str = None,
         progress_callback: Any = None,
