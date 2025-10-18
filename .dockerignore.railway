@@ -1,0 +1,56 @@
+# Git and version control
+.git
+.gitignore
+.github
+
+# Documentation
+*.md
+docs/
+PRPs/
+
+# Development files
+.claude/
+archon-example-workflow/
+
+# Node.js (will be built in multi-stage)
+archon-ui-main/node_modules
+archon-ui-main/dist
+archon-ui-main/.vite
+
+# Python development
+python/.venv
+python/__pycache__
+python/**/__pycache__
+python/.pytest_cache
+python/tests
+python/.env*
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+
+# Development Docker files
+docker-compose*.yml
+Dockerfile.server
+Dockerfile.mcp
+Dockerfile.agents
+
+# Environment files (handled via Railway variables)
+.env.example
+.env.local
+.env.development

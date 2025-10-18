@@ -1,0 +1,100 @@
+# Simplified single-stage Dockerfile for Railway
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    nodejs \
+    npm \
+    nginx \
+    supervisor \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python package manager
+RUN pip install uv
+
+# Copy and install Python dependencies
+COPY python/pyproject.toml python/uv.lock ./
+RUN uv sync --group server --group mcp --no-dev
+
+# Copy Python source
+COPY python/src ./src
+COPY python/migration ./migration
+
+# Install and build frontend
+COPY archon-ui-main/package*.json ./frontend/
+WORKDIR /app/frontend
+RUN npm ci --only=production --no-audit --no-fund
+
+COPY archon-ui-main/ ./
+RUN npm run build
+
+# Back to app directory
+WORKDIR /app
+
+# Configure Nginx for frontend and API proxy
+RUN echo 'server { \
+    listen 80; \
+    location / { \
+        root /app/frontend/dist; \
+        try_files $uri $uri/ /index.html; \
+    } \
+    location /api/ { \
+        proxy_pass http://127.0.0.1:8181; \
+        proxy_set_header Host $host; \
+        proxy_set_header X-Real-IP $remote_addr; \
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; \
+        proxy_set_header X-Forwarded-Proto $scheme; \
+    } \
+    location /health { \
+        proxy_pass http://127.0.0.1:8181/health; \
+    } \
+}' > /etc/nginx/sites-available/default
+
+# Configure Supervisor
+RUN echo '[supervisord] \
+nodaemon=true \
+user=root \
+\n[program:nginx] \
+command=nginx -g "daemon off;" \
+autostart=true \
+autorestart=true \
+stderr_logfile=/var/log/nginx.err.log \
+stdout_logfile=/var/log/nginx.out.log \
+\n[program:archon-server] \
+command=/app/.venv/bin/python -m uvicorn src.server.main:app --host 0.0.0.0 --port 8181 \
+directory=/app \
+autostart=true \
+autorestart=true \
+stderr_logfile=/var/log/archon-server.err.log \
+stdout_logfile=/var/log/archon-server.out.log \
+environment=PATH="/app/.venv/bin:%(ENV_PATH)s" \
+\n[program:archon-mcp] \
+command=/app/.venv/bin/python -m src.mcp_server.main \
+directory=/app \
+autostart=true \
+autorestart=true \
+stderr_logfile=/var/log/archon-mcp.err.log \
+stdout_logfile=/var/log/archon-mcp.out.log \
+environment=PATH="/app/.venv/bin:%(ENV_PATH)s"' > /etc/supervisor/conf.d/archon.conf
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PATH="/app/.venv/bin:$PATH"
+ENV PROD=true
+ENV ARCHON_SERVER_PORT=8181
+ENV ARCHON_MCP_PORT=8051
+ENV ARCHON_UI_PORT=80
+
+# Expose port for Railway
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost/health || exit 1
+
+# Start supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

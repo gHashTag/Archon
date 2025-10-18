@@ -1,0 +1,133 @@
+# Multi-stage build for Railway deployment
+# This Dockerfile combines frontend and backend in a single container
+
+# Stage 1: Build frontend
+FROM node:20-alpine AS frontend-builder
+
+WORKDIR /app/frontend
+COPY archon-ui-main/package*.json ./
+RUN npm ci --only=production --no-audit --no-fund
+
+COPY archon-ui-main/ ./
+RUN npm run build
+
+# Stage 2: Build backend
+FROM python:3.12-slim AS backend-builder
+
+WORKDIR /app
+
+# Install system dependencies for Python packages
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install uv for faster Python package management
+RUN pip install uv
+
+# Copy Python project files
+COPY python/pyproject.toml python/uv.lock ./
+COPY python/src ./src
+
+# Install Python dependencies
+RUN uv sync --group server --group mcp --no-dev
+
+# Stage 3: Production image
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    nginx \
+    supervisor \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy Python environment from builder
+COPY --from=backend-builder /app/.venv /app/.venv
+COPY --from=backend-builder /app/src /app/src
+
+# Copy built frontend from builder
+COPY --from=frontend-builder /app/frontend/dist /app/dist
+
+# Copy configuration files
+COPY python/migration /app/migration
+
+# Configure Nginx to serve frontend and proxy API
+COPY <<EOF /etc/nginx/sites-available/default
+server {
+    listen 80;
+
+    # Serve frontend static files
+    location / {
+        root /app/dist;
+        try_files \$uri \$uri/ /index.html;
+    }
+
+    # Proxy API requests to backend
+    location /api/ {
+        proxy_pass http://127.0.0.1:8181;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+
+    # Health check endpoint
+    location /health {
+        proxy_pass http://127.0.0.1:8181/health;
+    }
+}
+EOF
+
+# Configure Supervisor to manage multiple processes
+COPY <<EOF /etc/supervisor/conf.d/archon.conf
+[supervisord]
+nodaemon=true
+user=root
+
+[program:nginx]
+command=nginx -g "daemon off;"
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/nginx.err.log
+stdout_logfile=/var/log/nginx.out.log
+
+[program:archon-server]
+command=/app/.venv/bin/python -m uvicorn src.server.main:app --host 0.0.0.0 --port 8181
+directory=/app
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/archon-server.err.log
+stdout_logfile=/var/log/archon-server.out.log
+environment=PATH="/app/.venv/bin:%(ENV_PATH)s"
+
+[program:archon-mcp]
+command=/app/.venv/bin/python -m src.mcp_server.main
+directory=/app
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/archon-mcp.err.log
+stdout_logfile=/var/log/archon-mcp.out.log
+environment=PATH="/app/.venv/bin:%(ENV_PATH)s"
+EOF
+
+# Set environment variables for production
+ENV PYTHONPATH=/app
+ENV PATH="/app/.venv/bin:$PATH"
+ENV PROD=true
+ENV ARCHON_SERVER_PORT=8181
+ENV ARCHON_MCP_PORT=8051
+ENV ARCHON_UI_PORT=80
+
+# Expose port 80 for Railway
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost/health || exit 1
+
+# Start supervisor to manage all processes
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
