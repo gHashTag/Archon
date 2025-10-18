@@ -1,5 +1,6 @@
 """
 Vercel serverless adapter for Archon FastAPI backend
+Force rebuild: 2025-10-18 22:50 - Clear cache and rebuild with latest code
 """
 import os
 import sys

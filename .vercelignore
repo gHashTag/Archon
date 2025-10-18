@@ -1,22 +1,15 @@
-node_modules
-.git
-.venv
-__pycache__
+# Python cache
+__pycache__/
 *.pyc
-.pytest_cache
-.mypy_cache
-.ruff_cache
-*.log
-.DS_Store
-.env
-.env.*
-!.env.example
-archon-ui-main/node_modules
-archon-ui-main/dist
-python/.venv
-python/__pycache__
-coverage
-.coverage
-docs
-migration
-archon-example-workflow
+*.pyo
+*.pyd
+
+# Build cache  
+.vercel/
+.cache/
+
+# Node
+node_modules/
+
+# Local
+.env.local
