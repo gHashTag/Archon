@@ -11,7 +11,7 @@ Handles:
 import json
 from datetime import datetime, timezone
 from email.utils import format_datetime
-from typing import Any
+from typing import Any, Optional
 
 from fastapi import APIRouter, Header, HTTPException, Request, Response
 from fastapi import status as http_status

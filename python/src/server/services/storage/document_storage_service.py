@@ -6,7 +6,7 @@ Handles storage of documents in Supabase with parallel processing support.
 
 import asyncio
 import os
-from typing import Any
+from typing import Any, Optional
 
 from ...config.logfire_config import safe_span, search_logger
 from ..embeddings.contextual_embedding_service import generate_contextual_embeddings_batch

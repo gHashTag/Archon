@@ -8,7 +8,7 @@ Supports multi-instance configurations with automatic dimension detection and he
 import asyncio
 import time
 from dataclasses import dataclass
-from typing import Any, cast
+from typing import Any, cast, Optional
 
 import httpx
 

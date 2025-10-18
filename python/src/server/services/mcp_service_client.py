@@ -6,7 +6,7 @@ other services (API and Agents) instead of importing their modules directly.
 """
 
 import uuid
-from typing import Any
+from typing import Any, Optional
 from urllib.parse import urljoin
 
 import httpx

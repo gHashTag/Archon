@@ -1,7 +1,8 @@
 """
-from typing import Optional
 API routes for database migration tracking and management.
 """
+
+from typing import Optional
 
 from datetime import datetime
 

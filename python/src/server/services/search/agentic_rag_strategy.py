@@ -12,7 +12,7 @@ Key features:
 - Programming language and framework-aware search
 """
 
-from typing import Any
+from typing import Any, Optional
 
 from supabase import Client
 

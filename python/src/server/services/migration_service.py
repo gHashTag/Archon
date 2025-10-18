@@ -4,7 +4,7 @@ Database migration tracking and management service.
 
 import hashlib
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import logfire
 from supabase import Client

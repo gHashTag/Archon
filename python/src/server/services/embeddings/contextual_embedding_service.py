@@ -1,10 +1,11 @@
 """
-from typing import Optional
 Contextual Embedding Service
 
 Handles generation of contextual embeddings for improved RAG retrieval.
 Includes proper rate limiting for OpenAI API calls.
 """
+
+from typing import Optional
 
 import os
 

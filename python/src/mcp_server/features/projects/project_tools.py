@@ -1,9 +1,10 @@
 """
-from typing import Optional
 Consolidated project management tools for Archon MCP Server.
 
 Reduces the number of individual CRUD operations while maintaining full functionality.
 """
+
+from typing import Optional
 
 import asyncio
 import json

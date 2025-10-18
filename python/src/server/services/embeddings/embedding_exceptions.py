@@ -5,7 +5,7 @@ These exceptions follow the principle: "fail fast and loud" for data integrity i
 while allowing batch processes to continue by skipping failed items.
 """
 
-from typing import Any
+from typing import Any, Optional
 
 
 class EmbeddingError(Exception):

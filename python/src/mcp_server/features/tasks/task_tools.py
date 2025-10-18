@@ -6,7 +6,7 @@ Reduces the number of individual CRUD operations while maintaining full function
 
 import json
 import logging
-from typing import Any
+from typing import Any, Optional
 from urllib.parse import urljoin
 
 import httpx

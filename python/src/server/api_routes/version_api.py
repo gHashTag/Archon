@@ -3,7 +3,7 @@ API routes for version checking and update management.
 """
 
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
 
 import logfire
 from fastapi import APIRouter, Header, HTTPException, Response

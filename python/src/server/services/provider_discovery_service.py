@@ -7,7 +7,7 @@ for OpenAI, Google Gemini, Ollama, Anthropic, and Grok providers.
 
 import time
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Optional
 from urllib.parse import urlparse
 
 import aiohttp

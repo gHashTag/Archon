@@ -3,7 +3,7 @@ Version checking service with GitHub API integration.
 """
 
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, Optional
 
 import httpx
 import logfire

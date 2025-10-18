@@ -1,10 +1,11 @@
 """
-from typing import Optional
 MCP Session Manager
 
 This module provides simplified session management for MCP server connections,
 enabling clients to reconnect after server restarts.
 """
+
+from typing import Optional
 
 import uuid
 from datetime import datetime, timedelta

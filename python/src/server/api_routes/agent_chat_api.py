@@ -1,8 +1,8 @@
 """
-from typing import Optional
 Agent Chat API - Polling-based chat with SSE proxy to AI agents
 """
 
+from typing import Optional
 import logging
 import uuid
 from datetime import datetime

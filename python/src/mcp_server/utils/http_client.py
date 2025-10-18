@@ -10,6 +10,7 @@ from contextlib import asynccontextmanager
 import httpx
 
 from .timeout_config import get_default_timeout, get_polling_timeout
+from typing import Optional
 
 
 @asynccontextmanager

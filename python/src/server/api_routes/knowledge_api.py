@@ -1,5 +1,4 @@
 """
-from typing import Optional
 Knowledge Management API Module
 
 This module handles all knowledge base operations including:
@@ -9,6 +8,8 @@ This module handles all knowledge base operations including:
 - Knowledge item management and search
 - Progress tracking via HTTP polling
 """
+
+from typing import Optional
 
 import asyncio
 import json

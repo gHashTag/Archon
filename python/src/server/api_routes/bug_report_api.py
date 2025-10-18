@@ -5,7 +5,7 @@ Handles bug report submission to GitHub Issues with automatic context formatting
 """
 
 import os
-from typing import Any
+from typing import Any, Optional
 
 import httpx
 from fastapi import APIRouter, HTTPException

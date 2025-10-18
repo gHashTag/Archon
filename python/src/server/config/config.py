@@ -1,7 +1,8 @@
 """
-from typing import Optional
 Environment configuration management for the MCP server.
 """
+
+from typing import Optional
 
 import ipaddress
 import os

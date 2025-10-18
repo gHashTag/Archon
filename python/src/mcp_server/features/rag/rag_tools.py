@@ -1,5 +1,4 @@
 """
-from typing import Optional
 RAG Module for Archon MCP Server (HTTP-based version)
 
 This module provides tools for:
@@ -10,6 +9,8 @@ This module provides tools for:
 This version uses HTTP calls to the server service instead of importing
 service modules directly, enabling true microservices architecture.
 """
+
+from typing import Optional
 
 import json
 import logging

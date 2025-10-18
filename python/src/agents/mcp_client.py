@@ -8,7 +8,7 @@ instead of direct database access or service imports.
 
 import json
 import logging
-from typing import Any
+from typing import Any, Optional
 
 import httpx
 

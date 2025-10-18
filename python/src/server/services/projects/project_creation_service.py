@@ -7,7 +7,7 @@ AI-assisted documentation generation and progress tracking.
 
 # Removed direct logging import - using unified config
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, Optional
 
 from src.server.utils import get_supabase_client
 

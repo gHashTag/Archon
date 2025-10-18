@@ -9,7 +9,7 @@ This module defines Pydantic models for:
 
 from datetime import datetime
 from enum import Enum
-from typing import Any
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field, validator
 

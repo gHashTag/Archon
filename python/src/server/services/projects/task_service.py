@@ -7,7 +7,7 @@ shared between MCP tools and FastAPI endpoints.
 
 # Removed direct logging import - using unified config
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
 
 from src.server.utils import get_supabase_client
 

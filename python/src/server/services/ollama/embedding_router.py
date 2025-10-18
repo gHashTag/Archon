@@ -7,7 +7,7 @@ automatic fallback strategies for optimal performance across distributed Ollama 
 """
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Optional
 
 from ...config.logfire_config import get_logger
 from ..embeddings.multi_dimensional_embedding_service import multi_dimensional_embedding_service

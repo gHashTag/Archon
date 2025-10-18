@@ -1,5 +1,4 @@
 """
-from typing import Optional
 Pages API Module
 
 This module handles page retrieval operations for RAG:
@@ -7,6 +6,8 @@ This module handles page retrieval operations for RAG:
 - Get page by ID
 - Get page by URL
 """
+
+from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel

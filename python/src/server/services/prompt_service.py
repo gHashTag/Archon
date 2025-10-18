@@ -1,11 +1,12 @@
 """
-from typing import Optional
 Prompt Service Module for Archon
 
 This module provides a singleton service for managing AI agent prompts.
 Prompts are loaded from the database at startup and cached in memory for
 fast access during agent operations.
 """
+
+from typing import Optional
 
 # Removed direct logging import - using unified config
 from datetime import datetime

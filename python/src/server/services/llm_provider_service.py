@@ -8,7 +8,7 @@ Supports OpenAI, Ollama, and Google Gemini.
 import inspect
 import time
 from contextlib import asynccontextmanager
-from typing import Any
+from typing import Any, Optional
 
 import openai
 

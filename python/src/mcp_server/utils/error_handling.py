@@ -6,7 +6,7 @@ Provides consistent error formatting and helpful context for clients.
 
 import json
 import logging
-from typing import Any
+from typing import Any, Optional
 
 import httpx
 

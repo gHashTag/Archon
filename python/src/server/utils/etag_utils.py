@@ -2,7 +2,7 @@
 
 import hashlib
 import json
-from typing import Any
+from typing import Any, Optional
 
 
 def generate_etag(data: Any) -> str:

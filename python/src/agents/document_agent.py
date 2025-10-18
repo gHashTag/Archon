@@ -12,7 +12,7 @@ import os
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext

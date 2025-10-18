@@ -1,10 +1,11 @@
 """
-from typing import Optional
 LLMs-full.txt Section Parser
 
 Parses llms-full.txt files by splitting on H1 headers (# ) to create separate
 "pages" for each section. Each section gets a synthetic URL with a slug anchor.
 """
+
+from typing import Optional
 
 import re
 

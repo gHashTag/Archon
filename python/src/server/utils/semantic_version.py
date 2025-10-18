@@ -1,7 +1,8 @@
 """
-from typing import Optional
 Semantic version parsing and comparison utilities.
 """
+
+from typing import Optional
 
 import re
 
