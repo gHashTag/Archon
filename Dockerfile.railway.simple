@@ -29,7 +29,7 @@ COPY migration ./migration
 # Install and build frontend
 COPY archon-ui-main/package*.json ./frontend/
 WORKDIR /app/frontend
-RUN npm ci --only=production --no-audit --no-fund
+RUN npm ci --no-audit --no-fund
 
 COPY archon-ui-main/ ./
 RUN npm run build
