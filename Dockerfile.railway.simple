@@ -22,7 +22,7 @@ RUN uv sync --group server --group mcp --no-dev
 
 # Copy Python source
 COPY python/src ./src
-COPY python/migration ./migration
+COPY migration ./migration
 
 # Install and build frontend
 COPY archon-ui-main/package*.json ./frontend/
