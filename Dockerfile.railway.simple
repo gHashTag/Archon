@@ -9,8 +9,6 @@ RUN apt-get update && apt-get install -y \
     curl \
     nodejs \
     npm \
-    nginx \
-    supervisor \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python package manager
@@ -36,35 +34,20 @@ RUN npm run build
 # Back to app directory
 WORKDIR /app
 
-# No Nginx config needed - FastAPI will serve everything
-
-# Configure Supervisor (only FastAPI on Railway PORT)
-RUN printf '[supervisord]\n\
-nodaemon=true\n\
-user=root\n\
-\n\
-[program:archon-server]\n\
-command=/app/.venv/bin/python -m uvicorn src.server.main:app --host 0.0.0.0 --port %%(ENV_PORT)s\n\
-directory=/app\n\
-autostart=true\n\
-autorestart=true\n\
-stderr_logfile=/var/log/archon-server.err.log\n\
-stdout_logfile=/var/log/archon-server.out.log\n\
-environment=PATH="/app/.venv/bin:%%(ENV_PATH)s",PORT="%%(ENV_PORT)s"\n' > /etc/supervisor/conf.d/archon.conf
+# No supervisor needed - run FastAPI directly
 
 # Set environment variables
 ENV PYTHONPATH=/app
 ENV PATH="/app/.venv/bin:$PATH"
 ENV PROD=true
-ENV PORT=8080
 ENV FRONTEND_DIST_PATH=/app/frontend/dist
 
-# Expose port for Railway
+# Expose port for Railway (Railway will provide PORT env var)
 EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:${PORT:-8080}/health || exit 1
 
-# Start supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+# Start FastAPI directly (Railway provides $PORT)
+CMD /app/.venv/bin/python -m uvicorn src.server.main:app --host 0.0.0.0 --port ${PORT:-8080}
