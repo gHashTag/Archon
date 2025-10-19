@@ -216,10 +216,10 @@ app.include_router(version_router)
 app.include_router(migration_router)
 
 
-# Root endpoint
-@app.get("/")
-async def root():
-    """Root endpoint returning API information."""
+# API info endpoint (moved from root to not conflict with frontend)
+@app.get("/api")
+async def api_info():
+    """API information endpoint."""
     return {
         "name": "Archon Knowledge Engine API",
         "version": "1.0.0",
