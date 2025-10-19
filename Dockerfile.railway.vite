@@ -1,0 +1,75 @@
+# Railway Dockerfile with Vite dev server (like local docker-compose)
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install system dependencies including Node.js 18
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    supervisor \
+    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python package manager
+RUN pip install uv
+
+# Copy and install Python dependencies
+COPY python/pyproject.toml python/uv.lock ./
+RUN uv sync --group server --group mcp --no-dev
+
+# Copy Python source
+COPY python/src ./src
+COPY migration ./migration
+
+# Copy frontend
+COPY archon-ui-main ./frontend
+WORKDIR /app/frontend
+RUN npm ci
+
+# Back to app directory
+WORKDIR /app
+
+# Configure Supervisor to run both backend and frontend
+RUN printf '[supervisord]\n\
+nodaemon=true\n\
+user=root\n\
+\n\
+[program:archon-server]\n\
+command=/app/.venv/bin/python -m uvicorn src.server.main:app --host 0.0.0.0 --port 8181\n\
+directory=/app\n\
+autostart=true\n\
+autorestart=true\n\
+stderr_logfile=/var/log/archon-server.err.log\n\
+stdout_logfile=/var/log/archon-server.out.log\n\
+environment=PATH="/app/.venv/bin:%%(ENV_PATH)s"\n\
+\n\
+[program:archon-mcp]\n\
+command=/app/.venv/bin/python -m src.mcp_server.main\n\
+directory=/app\n\
+autostart=true\n\
+autorestart=true\n\
+stderr_logfile=/var/log/archon-mcp.err.log\n\
+stdout_logfile=/var/log/archon-mcp.out.log\n\
+environment=PATH="/app/.venv/bin:%%(ENV_PATH)s"\n\
+\n\
+[program:archon-frontend]\n\
+command=npm run dev -- --port 80 --host 0.0.0.0\n\
+directory=/app/frontend\n\
+autostart=true\n\
+autorestart=true\n\
+stderr_logfile=/var/log/archon-frontend.err.log\n\
+stdout_logfile=/var/log/archon-frontend.out.log\n' > /etc/supervisor/conf.d/archon.conf
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV PATH="/app/.venv/bin:$PATH"
+ENV ARCHON_SERVER_PORT=8181
+ENV ARCHON_MCP_PORT=8051
+
+# Expose port 80 for Railway (Vite will run on 80)
+EXPOSE 80
+
+# Start supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

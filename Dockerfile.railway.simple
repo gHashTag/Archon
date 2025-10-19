@@ -18,8 +18,6 @@ RUN pip install uv
 
 # Copy and install Python dependencies
 COPY python/pyproject.toml python/uv.lock ./
-# Increase timeout for large packages (crawl4ai, playwright, etc.)
-ENV UV_HTTP_TIMEOUT=120
 RUN uv sync --group server --group mcp --no-dev
 
 # Copy Python source
@@ -32,71 +30,56 @@ WORKDIR /app/frontend
 RUN npm ci --no-audit --no-fund
 
 COPY archon-ui-main/ ./
-RUN npm run build && ls -la dist/ && echo "=== BUILD COMPLETED ===" && cat dist/index.html | head -20
-
-# Verify build output exists
-RUN test -f dist/index.html || (echo "ERROR: Frontend build failed - dist/index.html not found" && exit 1)
-
-# TEMP: Create test HTML to verify Nginx is working
-RUN echo '<!DOCTYPE html><html><head><title>Archon Test</title></head><body><h1>🎯 Nginx is WORKING!</h1><p>If you see this, Nginx serves files correctly.</p></body></html>' > dist/test.html
+RUN npm run build
 
 # Back to app directory
 WORKDIR /app
 
 # Configure Nginx for frontend and API proxy
-RUN printf 'server {\n\
-    listen 80;\n\
-    \n\
-    # API endpoints - must be BEFORE root location\n\
-    location /api/ {\n\
-        proxy_pass http://127.0.0.1:8181;\n\
-        proxy_set_header Host $host;\n\
-        proxy_set_header X-Real-IP $remote_addr;\n\
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n\
-        proxy_set_header X-Forwarded-Proto $scheme;\n\
-    }\n\
-    \n\
-    location /health {\n\
-        proxy_pass http://127.0.0.1:8181/health;\n\
-    }\n\
-    \n\
-    # Frontend static files - AFTER API routes\n\
-    location / {\n\
-        root /app/frontend/dist;\n\
-        try_files $uri $uri/ /index.html;\n\
-        add_header Cache-Control "no-cache";\n\
-    }\n\
-}\n' > /etc/nginx/sites-available/default
+RUN echo 'server { \
+    listen 80; \
+    location / { \
+        root /app/frontend/dist; \
+        try_files $uri $uri/ /index.html; \
+    } \
+    location /api/ { \
+        proxy_pass http://127.0.0.1:8181; \
+        proxy_set_header Host $host; \
+        proxy_set_header X-Real-IP $remote_addr; \
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; \
+        proxy_set_header X-Forwarded-Proto $scheme; \
+    } \
+    location /health { \
+        proxy_pass http://127.0.0.1:8181/health; \
+    } \
+}' > /etc/nginx/sites-available/default
 
-# Configure Supervisor with proper INI format
-RUN printf '[supervisord]\n\
-nodaemon=true\n\
-user=root\n\
-\n\
-[program:nginx]\n\
-command=nginx -g "daemon off;"\n\
-autostart=true\n\
-autorestart=true\n\
-stderr_logfile=/var/log/nginx.err.log\n\
-stdout_logfile=/var/log/nginx.out.log\n\
-\n\
-[program:archon-server]\n\
-command=/app/.venv/bin/python -m uvicorn src.server.main:app --host 0.0.0.0 --port 8181\n\
-directory=/app\n\
-autostart=true\n\
-autorestart=true\n\
-stderr_logfile=/var/log/archon-server.err.log\n\
-stdout_logfile=/var/log/archon-server.out.log\n\
-environment=PATH="/app/.venv/bin:%%(ENV_PATH)s"\n\
-\n\
-[program:archon-mcp]\n\
-command=/app/.venv/bin/python -m src.mcp_server.main\n\
-directory=/app\n\
-autostart=true\n\
-autorestart=true\n\
-stderr_logfile=/var/log/archon-mcp.err.log\n\
-stdout_logfile=/var/log/archon-mcp.out.log\n\
-environment=PATH="/app/.venv/bin:%%(ENV_PATH)s"\n' > /etc/supervisor/conf.d/archon.conf
+# Configure Supervisor
+RUN echo '[supervisord] \
+nodaemon=true \
+user=root \
+\n[program:nginx] \
+command=nginx -g "daemon off;" \
+autostart=true \
+autorestart=true \
+stderr_logfile=/var/log/nginx.err.log \
+stdout_logfile=/var/log/nginx.out.log \
+\n[program:archon-server] \
+command=/app/.venv/bin/python -m uvicorn src.server.main:app --host 0.0.0.0 --port 8181 \
+directory=/app \
+autostart=true \
+autorestart=true \
+stderr_logfile=/var/log/archon-server.err.log \
+stdout_logfile=/var/log/archon-server.out.log \
+environment=PATH="/app/.venv/bin:%(ENV_PATH)s" \
+\n[program:archon-mcp] \
+command=/app/.venv/bin/python -m src.mcp_server.main \
+directory=/app \
+autostart=true \
+autorestart=true \
+stderr_logfile=/var/log/archon-mcp.err.log \
+stdout_logfile=/var/log/archon-mcp.out.log \
+environment=PATH="/app/.venv/bin:%(ENV_PATH)s"' > /etc/supervisor/conf.d/archon.conf
 
 # Set environment variables
 ENV PYTHONPATH=/app
