@@ -11,7 +11,6 @@ RUN apt-get update && apt-get install -y \
     npm \
     nginx \
     supervisor \
-    gettext-base \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python package manager
@@ -61,8 +60,15 @@ RUN printf '#!/bin/bash\n\
 set -e\n\
 echo "🚀 Starting Archon with PORT=${PORT:-80}"\n\
 \n\
-# Update Nginx config with correct PORT\n\
-envsubst '"'"'$PORT'"'"' < /etc/nginx/sites-available/default.template > /etc/nginx/sites-available/default\n\
+# Update Nginx config with correct PORT using Python\n\
+python3 -c "\n\
+import os\n\
+with open('\''/etc/nginx/sites-available/default.template'\'') as f:\n\
+    content = f.read()\n\
+content = content.replace('\''\\${PORT:-80}'\'', os.getenv('\''PORT'\'', '\''80'\''))\n\
+with open('\''/etc/nginx/sites-available/default'\'', '\''w'\'') as f:\n\
+    f.write(content)\n\
+"\n\
 echo "✅ Nginx configured to listen on port ${PORT:-80}"\n\
 \n\
 # Start supervisor\n\
