@@ -38,23 +38,29 @@ RUN npm run build
 WORKDIR /app
 
 # Configure Nginx for frontend and API proxy
-RUN echo 'server { \
-    listen 80; \
-    location / { \
-        root /app/frontend/dist; \
-        try_files $uri $uri/ /index.html; \
-    } \
-    location /api/ { \
-        proxy_pass http://127.0.0.1:8181; \
-        proxy_set_header Host $host; \
-        proxy_set_header X-Real-IP $remote_addr; \
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; \
-        proxy_set_header X-Forwarded-Proto $scheme; \
-    } \
-    location /health { \
-        proxy_pass http://127.0.0.1:8181/health; \
-    } \
-}' > /etc/nginx/sites-available/default
+RUN printf 'server {\n\
+    listen 80;\n\
+    \n\
+    # API endpoints - must be BEFORE root location\n\
+    location /api/ {\n\
+        proxy_pass http://127.0.0.1:8181;\n\
+        proxy_set_header Host $host;\n\
+        proxy_set_header X-Real-IP $remote_addr;\n\
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n\
+        proxy_set_header X-Forwarded-Proto $scheme;\n\
+    }\n\
+    \n\
+    location /health {\n\
+        proxy_pass http://127.0.0.1:8181/health;\n\
+    }\n\
+    \n\
+    # Frontend static files - AFTER API routes\n\
+    location / {\n\
+        root /app/frontend/dist;\n\
+        try_files $uri $uri/ /index.html;\n\
+        add_header Cache-Control "no-cache";\n\
+    }\n\
+}\n' > /etc/nginx/sites-available/default
 
 # Configure Supervisor with proper INI format
 RUN printf '[supervisord]\n\
