@@ -32,10 +32,13 @@ WORKDIR /app/frontend
 RUN npm ci --no-audit --no-fund
 
 COPY archon-ui-main/ ./
-RUN npm run build && ls -la dist/
+RUN npm run build && ls -la dist/ && echo "=== BUILD COMPLETED ===" && cat dist/index.html | head -20
 
 # Verify build output exists
 RUN test -f dist/index.html || (echo "ERROR: Frontend build failed - dist/index.html not found" && exit 1)
+
+# TEMP: Create test HTML to verify Nginx is working
+RUN echo '<!DOCTYPE html><html><head><title>Archon Test</title></head><body><h1>🎯 Nginx is WORKING!</h1><p>If you see this, Nginx serves files correctly.</p></body></html>' > dist/test.html
 
 # Back to app directory
 WORKDIR /app
