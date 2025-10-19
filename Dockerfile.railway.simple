@@ -18,6 +18,7 @@ RUN pip install uv
 
 # Copy and install Python dependencies
 COPY python/pyproject.toml python/uv.lock ./
+ENV UV_HTTP_TIMEOUT=120
 RUN uv sync --group server --group mcp --no-dev
 
 # Copy Python source
@@ -38,10 +39,6 @@ WORKDIR /app
 # Configure Nginx for frontend and API proxy
 RUN echo 'server { \
     listen 80; \
-    location / { \
-        root /app/frontend/dist; \
-        try_files $uri $uri/ /index.html; \
-    } \
     location /api/ { \
         proxy_pass http://127.0.0.1:8181; \
         proxy_set_header Host $host; \
@@ -51,6 +48,10 @@ RUN echo 'server { \
     } \
     location /health { \
         proxy_pass http://127.0.0.1:8181/health; \
+    } \
+    location / { \
+        root /app/frontend/dist; \
+        try_files $uri $uri/ /index.html; \
     } \
 }' > /etc/nginx/sites-available/default
 
