@@ -56,31 +56,34 @@ RUN echo 'server { \
 }' > /etc/nginx/sites-available/default
 
 # Configure Supervisor
-RUN echo '[supervisord] \
-nodaemon=true \
-user=root \
-\n[program:nginx] \
-command=nginx -g "daemon off;" \
-autostart=true \
-autorestart=true \
-stderr_logfile=/var/log/nginx.err.log \
-stdout_logfile=/var/log/nginx.out.log \
-\n[program:archon-server] \
-command=/app/.venv/bin/python -m uvicorn src.server.main:app --host 0.0.0.0 --port 8181 \
-directory=/app \
-autostart=true \
-autorestart=true \
-stderr_logfile=/var/log/archon-server.err.log \
-stdout_logfile=/var/log/archon-server.out.log \
-environment=PATH="/app/.venv/bin:%(ENV_PATH)s" \
-\n[program:archon-mcp] \
-command=/app/.venv/bin/python -m src.mcp_server.main \
-directory=/app \
-autostart=true \
-autorestart=true \
-stderr_logfile=/var/log/archon-mcp.err.log \
-stdout_logfile=/var/log/archon-mcp.out.log \
-environment=PATH="/app/.venv/bin:%(ENV_PATH)s"' > /etc/supervisor/conf.d/archon.conf
+RUN printf '[supervisord]\n\
+nodaemon=true\n\
+user=root\n\
+\n\
+[program:nginx]\n\
+command=nginx -g "daemon off;"\n\
+autostart=true\n\
+autorestart=true\n\
+stderr_logfile=/var/log/nginx.err.log\n\
+stdout_logfile=/var/log/nginx.out.log\n\
+\n\
+[program:archon-server]\n\
+command=/app/.venv/bin/python -m uvicorn src.server.main:app --host 0.0.0.0 --port 8181\n\
+directory=/app\n\
+autostart=true\n\
+autorestart=true\n\
+stderr_logfile=/var/log/archon-server.err.log\n\
+stdout_logfile=/var/log/archon-server.out.log\n\
+environment=PATH="/app/.venv/bin:%%(ENV_PATH)s"\n\
+\n\
+[program:archon-mcp]\n\
+command=/app/.venv/bin/python -m src.mcp_server.main\n\
+directory=/app\n\
+autostart=true\n\
+autorestart=true\n\
+stderr_logfile=/var/log/archon-mcp.err.log\n\
+stdout_logfile=/var/log/archon-mcp.out.log\n\
+environment=PATH="/app/.venv/bin:%%(ENV_PATH)s"\n' > /etc/supervisor/conf.d/archon.conf
 
 # Set environment variables
 ENV PYTHONPATH=/app
