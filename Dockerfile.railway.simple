@@ -36,9 +36,9 @@ RUN npm run build
 # Back to app directory
 WORKDIR /app
 
-# Configure Nginx for frontend and API proxy
+# Create Nginx config template (will be updated with PORT at runtime)
 RUN echo 'server { \
-    listen 80; \
+    listen ${PORT:-80}; \
     location /api/ { \
         proxy_pass http://127.0.0.1:8181; \
         proxy_set_header Host $host; \
@@ -53,7 +53,20 @@ RUN echo 'server { \
         root /app/frontend/dist; \
         try_files $uri $uri/ /index.html; \
     } \
-}' > /etc/nginx/sites-available/default
+}' > /etc/nginx/sites-available/default.template
+
+# Create startup script to configure Nginx with Railway PORT
+RUN printf '#!/bin/bash\n\
+set -e\n\
+echo "🚀 Starting Archon with PORT=${PORT:-80}"\n\
+\n\
+# Update Nginx config with correct PORT\n\
+envsubst '"'"'$PORT'"'"' < /etc/nginx/sites-available/default.template > /etc/nginx/sites-available/default\n\
+echo "✅ Nginx configured to listen on port ${PORT:-80}"\n\
+\n\
+# Start supervisor\n\
+exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf\n\
+' > /app/start.sh && chmod +x /app/start.sh
 
 # Configure Supervisor
 RUN printf '[supervisord]\n\
@@ -103,5 +116,5 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f http://localhost/health || exit 1
 
-# Start supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+# Start with custom script that configures Nginx PORT
+CMD ["/app/start.sh"]

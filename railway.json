@@ -6,7 +6,6 @@
     "dockerContext": "."
   },
   "deploy": {
-    "startCommand": "supervisord -c /etc/supervisor/supervisord.conf",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
