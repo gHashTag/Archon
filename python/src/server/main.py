@@ -17,6 +17,9 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from pathlib import Path
 
 from .api_routes.agent_chat_api import router as agent_chat_router
 from .api_routes.bug_report_api import router as bug_report_router
@@ -214,6 +217,31 @@ app.include_router(bug_report_router)
 app.include_router(providers_router)
 app.include_router(version_router)
 app.include_router(migration_router)
+
+# Serve frontend static files on Railway
+frontend_dist_path = os.getenv("FRONTEND_DIST_PATH", "/app/frontend/dist")
+frontend_path = Path(frontend_dist_path)
+
+if frontend_path.exists() and frontend_path.is_dir():
+    logger.info(f"✅ Serving frontend from {frontend_dist_path}")
+
+    # Mount static assets (JS, CSS, images, etc.)
+    app.mount("/assets", StaticFiles(directory=frontend_path / "assets"), name="assets")
+
+    # SPA fallback - serve index.html for all non-API routes
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        """Serve index.html for all routes not handled by API"""
+        # Don't intercept API routes
+        if full_path.startswith("api/"):
+            return {"detail": "Not Found"}
+
+        index_path = frontend_path / "index.html"
+        if index_path.exists():
+            return FileResponse(index_path)
+        return {"detail": "Frontend not found"}
+else:
+    logger.warning(f"⚠️ Frontend dist path not found: {frontend_dist_path}")
 
 
 # API info endpoint (moved from root to not conflict with frontend)

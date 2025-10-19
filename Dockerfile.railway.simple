@@ -36,92 +36,35 @@ RUN npm run build
 # Back to app directory
 WORKDIR /app
 
-# Create Nginx config template (will be updated with PORT at runtime)
-RUN echo 'server { \
-    listen ${PORT:-80}; \
-    location /api/ { \
-        proxy_pass http://127.0.0.1:8181; \
-        proxy_set_header Host $host; \
-        proxy_set_header X-Real-IP $remote_addr; \
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; \
-        proxy_set_header X-Forwarded-Proto $scheme; \
-    } \
-    location /health { \
-        proxy_pass http://127.0.0.1:8181/health; \
-    } \
-    location / { \
-        root /app/frontend/dist; \
-        try_files $uri $uri/ /index.html; \
-    } \
-}' > /etc/nginx/sites-available/default.template
+# No Nginx config needed - FastAPI will serve everything
 
-# Create startup script to configure Nginx with Railway PORT
-RUN printf '#!/bin/bash\n\
-set -e\n\
-echo "🚀 Starting Archon with PORT=${PORT:-80}"\n\
-\n\
-# Update Nginx config with correct PORT using Python\n\
-python3 -c "\n\
-import os\n\
-with open('\''/etc/nginx/sites-available/default.template'\'') as f:\n\
-    content = f.read()\n\
-content = content.replace('\''\\${PORT:-80}'\'', os.getenv('\''PORT'\'', '\''80'\''))\n\
-with open('\''/etc/nginx/sites-available/default'\'', '\''w'\'') as f:\n\
-    f.write(content)\n\
-"\n\
-echo "✅ Nginx configured to listen on port ${PORT:-80}"\n\
-\n\
-# Start supervisor\n\
-exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf\n\
-' > /app/start.sh && chmod +x /app/start.sh
-
-# Configure Supervisor
+# Configure Supervisor (only FastAPI on Railway PORT)
 RUN printf '[supervisord]\n\
 nodaemon=true\n\
 user=root\n\
 \n\
-[program:nginx]\n\
-command=nginx -g "daemon off;"\n\
-autostart=true\n\
-autorestart=true\n\
-stderr_logfile=/var/log/nginx.err.log\n\
-stdout_logfile=/var/log/nginx.out.log\n\
-\n\
 [program:archon-server]\n\
-command=/app/.venv/bin/python -m uvicorn src.server.main:app --host 0.0.0.0 --port 8181\n\
+command=/app/.venv/bin/python -m uvicorn src.server.main:app --host 0.0.0.0 --port %%(ENV_PORT)s\n\
 directory=/app\n\
 autostart=true\n\
 autorestart=true\n\
 stderr_logfile=/var/log/archon-server.err.log\n\
 stdout_logfile=/var/log/archon-server.out.log\n\
-environment=PATH="/app/.venv/bin:%%(ENV_PATH)s"\n\
-\n\
-[program:archon-mcp]\n\
-command=/app/.venv/bin/python -m src.mcp_server.main\n\
-directory=/app\n\
-autostart=true\n\
-autorestart=true\n\
-stderr_logfile=/var/log/archon-mcp.err.log\n\
-stdout_logfile=/var/log/archon-mcp.out.log\n\
-environment=PATH="/app/.venv/bin:%%(ENV_PATH)s"\n' > /etc/supervisor/conf.d/archon.conf
+environment=PATH="/app/.venv/bin:%%(ENV_PATH)s",PORT="%%(ENV_PORT)s"\n' > /etc/supervisor/conf.d/archon.conf
 
 # Set environment variables
 ENV PYTHONPATH=/app
 ENV PATH="/app/.venv/bin:$PATH"
 ENV PROD=true
-ENV ARCHON_SERVER_PORT=8181
-ENV ARCHON_MCP_PORT=8051
-ENV ARCHON_UI_PORT=80
-
-# Railway requires PORT environment variable
-ENV PORT=80
+ENV PORT=8080
+ENV FRONTEND_DIST_PATH=/app/frontend/dist
 
 # Expose port for Railway
-EXPOSE 80
+EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost/health || exit 1
+    CMD curl -f http://localhost:${PORT:-8080}/health || exit 1
 
-# Start with custom script that configures Nginx PORT
-CMD ["/app/start.sh"]
+# Start supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
