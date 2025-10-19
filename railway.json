@@ -6,8 +6,10 @@
     "dockerContext": "."
   },
   "deploy": {
-    "startCommand": "supervisord -c /etc/supervisor/conf.d/archon.conf",
+    "startCommand": "supervisord -c /etc/supervisor/supervisord.conf",
     "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 10
+    "restartPolicyMaxRetries": 10,
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 100
   }
 }
