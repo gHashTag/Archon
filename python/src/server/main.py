@@ -221,7 +221,6 @@ app.include_router(migration_router)
 # Serve frontend static files on Railway
 frontend_dist_path = os.getenv("FRONTEND_DIST_PATH", "/app/frontend/dist")
 frontend_path = Path(frontend_dist_path)
-
 # Diagnostic logging
 logger.info(f"🔍 Frontend path check:")
 logger.info(f"   Path: {frontend_dist_path}")
