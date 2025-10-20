@@ -243,6 +243,10 @@ if frontend_path.exists() and frontend_path.is_dir():
     # Mount static assets (JS, CSS, images, etc.)
     app.mount("/assets", StaticFiles(directory=frontend_path / "assets"), name="assets")
 
+    # Mount images directory (icons, logos, etc.)
+    if (frontend_path / "img").exists():
+        app.mount("/img", StaticFiles(directory=frontend_path / "img"), name="img")
+
     # SPA fallback - serve index.html for all non-API routes
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):
@@ -251,6 +255,12 @@ if frontend_path.exists() and frontend_path.is_dir():
         if full_path.startswith("api/"):
             return {"detail": "Not Found"}
 
+        # Serve static files from root (favicon, logos, etc.)
+        static_file = frontend_path / full_path
+        if static_file.is_file():
+            return FileResponse(static_file)
+
+        # Default to index.html for SPA routes
         index_path = frontend_path / "index.html"
         if index_path.exists():
             return FileResponse(index_path)
