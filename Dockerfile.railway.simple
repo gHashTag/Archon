@@ -45,6 +45,9 @@ ENV FRONTEND_DIST_PATH=/app/frontend/dist
 # Expose port for Railway (Railway will provide PORT env var)
 EXPOSE 8080
 
-# Start FastAPI directly (Railway provides $PORT)
-# Use shell form to allow environment variable expansion
-CMD ["/bin/sh", "-c", "/app/.venv/bin/python -m uvicorn src.server.main:app --host 0.0.0.0 --port ${PORT:-8080}"]
+# Copy Railway startup wrapper
+COPY python/start_railway.py ./start_railway.py
+RUN chmod +x ./start_railway.py
+
+# Start using Python wrapper (handles PORT reliably)
+CMD ["/app/.venv/bin/python", "/app/start_railway.py"]
