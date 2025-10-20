@@ -222,6 +222,21 @@ app.include_router(migration_router)
 frontend_dist_path = os.getenv("FRONTEND_DIST_PATH", "/app/frontend/dist")
 frontend_path = Path(frontend_dist_path)
 
+# Diagnostic logging
+logger.info(f"🔍 Frontend path check:")
+logger.info(f"   Path: {frontend_dist_path}")
+logger.info(f"   Exists: {frontend_path.exists()}")
+logger.info(f"   Is dir: {frontend_path.is_dir() if frontend_path.exists() else 'N/A'}")
+logger.info(f"   Absolute: {frontend_path.absolute()}")
+
+# Try to list directory to see what's wrong
+try:
+    import subprocess
+    result = subprocess.run(['ls', '-la', frontend_dist_path], capture_output=True, text=True)
+    logger.info(f"   ls output: {result.stdout[:200]}")
+except Exception as e:
+    logger.info(f"   ls failed: {e}")
+
 if frontend_path.exists() and frontend_path.is_dir():
     logger.info(f"✅ Serving frontend from {frontend_dist_path}")
 
