@@ -17,6 +17,9 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from pathlib import Path
 
 from .api_routes.agent_chat_api import router as agent_chat_router
 from .api_routes.bug_report_api import router as bug_report_router
@@ -216,10 +219,61 @@ app.include_router(version_router)
 app.include_router(migration_router)
 
 
-# Root endpoint
-@app.get("/")
-async def root():
-    """Root endpoint returning API information."""
+# Serve frontend static files on Railway
+frontend_dist_path = os.getenv("FRONTEND_DIST_PATH", "/app/frontend/dist")
+frontend_path = Path(frontend_dist_path)
+
+# Diagnostic logging
+logger.info(f"🔍 Frontend path check:")
+logger.info(f"   Path: {frontend_dist_path}")
+logger.info(f"   Exists: {frontend_path.exists()}")
+logger.info(f"   Is dir: {frontend_path.is_dir() if frontend_path.exists() else 'N/A'}")
+logger.info(f"   Absolute: {frontend_path.absolute()}")
+
+# Try to list directory to see what's wrong
+try:
+    import subprocess
+    result = subprocess.run(['ls', '-la', frontend_dist_path], capture_output=True, text=True)
+    logger.info(f"   ls output: {result.stdout[:200]}")
+except Exception as e:
+    logger.info(f"   ls failed: {e}")
+
+if frontend_path.exists() and frontend_path.is_dir():
+    logger.info(f"✅ Serving frontend from {frontend_dist_path}")
+
+    # Mount static assets (JS, CSS, images, etc.)
+    app.mount("/assets", StaticFiles(directory=frontend_path / "assets"), name="assets")
+
+    # Mount images directory (icons, logos, etc.)
+    if (frontend_path / "img").exists():
+        app.mount("/img", StaticFiles(directory=frontend_path / "img"), name="img")
+
+    # SPA fallback - serve index.html for all non-API routes
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        """Serve index.html for all routes not handled by API"""
+        # Don't intercept API routes
+        if full_path.startswith("api/"):
+            return {"detail": "Not Found"}
+
+        # Serve static files from root (favicon, logos, etc.)
+        static_file = frontend_path / full_path
+        if static_file.is_file():
+            return FileResponse(static_file)
+
+        # Default to index.html for SPA routes
+        index_path = frontend_path / "index.html"
+        if index_path.exists():
+            return FileResponse(index_path)
+        return {"detail": "Frontend not found"}
+else:
+    logger.warning(f"⚠️ Frontend dist path not found: {frontend_dist_path}")
+
+
+# API info endpoint (moved from root to not conflict with frontend)
+@app.get("/api")
+async def api_info():
+    """API information endpoint."""
     return {
         "name": "Archon Knowledge Engine API",
         "version": "1.0.0",
